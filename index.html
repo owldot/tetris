@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <script src="tetris.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  </link>
+  <title>Tetris</title>
+</head>
+
+<body>
+  <h1>
+    Andrew's and Lana's Tetris R
+  </h1>
+  <h3>Score: <span id="score">0</span></h3>
+
+
+  <div class="grid" id="grid">
+  </div>
+  <script lang="javascript">
+
+    let container = document.getElementById('grid')
+    for (i = 0; i < 200; i++) {
+      container.appendChild(document.createElement('div'));
+    }
+
+  </script>
+
+</body>
+
+</html>

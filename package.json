@@ -1,0 +1,29 @@
+{
+  "name": "tetris",
+  "version": "1.0.0",
+  "description": "Tetris game.",
+  "main": "tetris.js",
+  "scripts": {
+    "test": "jest",
+    "test:debug": "node --inspect node_modules/.bin/jest --watch --runInBand"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lanadz/tetris.git"
+  },
+  "keywords": [
+    "tetris"
+  ],
+  "author": "Lana Dz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lanadz/tetris/issues"
+  },
+  "homepage": "https://github.com/lanadz/tetris#readme",
+  "devDependencies": {
+    "jest": "^26.4.2"
+  },
+  "dependencies": {
+    "@types/jest": "^26.0.14"
+  }
+}

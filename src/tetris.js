@@ -82,6 +82,16 @@ class Mover {
       rotationSequence: this.rotationSequence
     }
   }
+
+  rotateClockwise() {
+    const allRotations = TetrisPieces[this.nameOfShape].rotations;
+    const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length
+    return {
+      coords: this.coords,
+      name: this.nameOfShape,
+      rotationSequence: nextRotation
+    }
+  }
 }
 
 const TetrisPieces = {

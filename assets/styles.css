@@ -1,5 +1,6 @@
 body {
   background-color: black;
+  text-align: center;
 }
 
 h1 {
@@ -7,7 +8,28 @@ h1 {
 }
 
 h3 {
-  color: yellow;
+  color: white;
+}
+
+.start {
+  box-sizing:border-box;
+  color:rgb(255, 208, 0);
+  background-color: green;
+  border: 2px solid darkgreen;
+  padding: calc(.5em - 1px) 1.375em;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  height: auto;
+  line-height: 21px;
+  text-size-adjust: 100%;
+  width: auto;
+  margin-bottom: 1em;
 }
 
 .grid {
@@ -16,6 +38,7 @@ h3 {
   border: 2px solid red;
   display: flex;
   flex-wrap: wrap;
+  margin: auto;
 }
 
 .grid div {

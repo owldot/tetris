@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Tetris game.",
   "main": "tetris.js",
+  "type": "module",
   "scripts": {
     "test": "jest",
     "test:debug": "node --inspect node_modules/.bin/jest --watch --runInBand"

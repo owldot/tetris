@@ -1,10 +1,12 @@
 class Tetris {
-  board;
-  nextPiece;
 
   constructor(board) {
     this.board = board;
     this.nextPiece = this.pickRandomPiece();
+  }
+
+  render() {
+    this.board.area
   }
 
   pickRandomPiece() {

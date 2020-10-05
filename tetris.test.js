@@ -1,4 +1,4 @@
-const { Tetris, Board, Mover } = require('./src/tetris');
+const { Tetris, Board, Mover, Piece } = require('./src/tetris');
 
 test('Board is created', () => {
   let board = new Board(4, 5);
@@ -15,96 +15,57 @@ test('Tetris is initiated', () => {
 });
 
 test('Piece moves down', () => {
-  const piece = {
-    coords: [[0, 0], [0, 1], [1, 0], [2, 0]],
-    name: 'lLShape',
-    rotationSequence: 0
-  };
-  const pieceNext = {
-    coords: [[1, 0], [1, 1], [2, 0], [3, 0]],
-    name: 'lLShape',
-    rotationSequence: 0
-  };
+  const piece = new Piece([[0, 0], [0, 1], [1, 0], [2, 0]], 'lLShape', 0);
+  const pieceNext = new Piece([[1, 0], [1, 1], [2, 0], [3, 0]], 'lLShape', 0)
+
   const mover = new Mover(piece);
   expect(mover.down()).toEqual(pieceNext);
 })
 
 test('Piece moves left', () => {
-  const piece = {
-    coords: [[0, 2], [1, 2], [2, 1], [2, 2]],
-    name: 'lRShape',
-    rotationSequence: 2
-  };
-  const pieceNext = {
-    coords: [[0, 1], [1, 1], [2, 0], [2, 1]],
-    name: 'lRShape',
-    rotationSequence: 2
+  const piece = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 2);
+  const pieceNext = new Piece([[0, 1], [1, 1], [2, 0], [2, 1]], 'lRShape', 2)
 
-  };
   const mover = new Mover(piece);
   expect(mover.left()).toEqual(pieceNext);
 })
 
 test('Piece moves right', () => {
-  const piece = {
-    coords: [[0, 2], [1, 2], [2, 1], [2, 2]],
-    name: 'lRShape',
-    rotationSequence: 2
-  };
-  const pieceNext = {
-    coords: [[0, 3], [1, 3], [2, 2], [2, 3]],
-    name: 'lRShape',
-    rotationSequence: 2
+  const piece = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 2);
+  const pieceNext = new Piece([[0, 3], [1, 3], [2, 2], [2, 3]], 'lRShape', 2)
 
-  };
   const mover = new Mover(piece);
   expect(mover.right()).toEqual(pieceNext);
 })
 
 test('Piece rotates clockwise', () => {
-  const piece = {
-    coords: [[0, 2], [1, 2], [2, 1], [2, 2]],
-    name: 'lRShape',
-    rotationSequence: 2
-  };
-  const pieceNext = {
-    coords: [[0, 2], [1, 2], [2, 1], [2, 2]],
-    name: 'lRShape',
-    rotationSequence: 3
+  const piece = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 2);
+  const pieceNext = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 3);
 
-  };
   const mover = new Mover(piece);
   expect(mover.rotateClockwise()).toEqual(pieceNext);
 })
 
-test('Piece rotates clockwise back to 0 sequence when overflows', () => {
-  const piece = {
-    coords: [[0, 2], [1, 2], [2, 1], [2, 2]],
-    name: 'lRShape',
-    rotationSequence: 3
-  };
-  const pieceNext = {
-    coords: [[0, 2], [1, 2], [2, 1], [2, 2]],
-    name: 'lRShape',
-    rotationSequence: 0
+test('Piece rotates counterclockwise', () => {
+  const piece = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 2);
+  const pieceNext = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 1);
 
-  };
+  const mover = new Mover(piece);
+  expect(mover.rotateCounterClockwise()).toEqual(pieceNext);
+})
+
+test('Piece rotates clockwise back to 0 sequence when overflows', () => {
+  const piece = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 3);
+  const pieceNext = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 0);
+
   const mover = new Mover(piece);
   expect(mover.rotateClockwise()).toEqual(pieceNext);
 })
 
 test('Piece square shape doesn\'t rotate', () => {
-  const piece = {
-    coords: [[0, 0], [0, 1], [1, 0], [1, 1]],
-    name: 'square',
-    rotationSequence: 0
-  };
-  const pieceNext = {
-    coords: [[0, 0], [0, 1], [1, 0], [1, 1]],
-    name: 'square',
-    rotationSequence: 0
+  const piece = new Piece([[0, 0], [0, 1], [1, 0], [1, 1]], 'square', 0);
+  const pieceNext = new Piece([[0, 0], [0, 1], [1, 0], [1, 1]], 'square', 0);
 
-  };
   const mover = new Mover(piece);
   expect(mover.rotateClockwise()).toEqual(pieceNext);
 })

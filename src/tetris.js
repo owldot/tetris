@@ -1,12 +1,11 @@
 class Tetris {
-
   constructor(board) {
     this.board = board;
     this.nextPiece = this.pickRandomPiece();
   }
 
   render() {
-    this.board.area
+    return this.board.area
   }
 
   pickRandomPiece() {
@@ -14,13 +13,8 @@ class Tetris {
     let randomKey = keys[Math.floor(Math.random() * keys.length)];
     let pieceWithAllRotations = TetrisPieces[randomKey].rotations;
     let randomRotation = Math.floor(Math.random() * pieceWithAllRotations.length);
-    return {
-      coords: pieceWithAllRotations[Math.floor(randomRotation)],
-      name: randomKey,
-      rotationSequence: randomRotation
-    };
+    return new Piece(pieceWithAllRotations[Math.floor(randomRotation)], randomKey, randomRotation);
   }
-
 }
 
 class Board {
@@ -40,10 +34,22 @@ class Board {
   }
 }
 
+class Piece {
+  coords;
+  nameOfShape;
+  rotationSequence;
+
+  constructor(coords, nameOfShape, rotationSequence) {
+    this.coords = coords;
+    this.nameOfShape = nameOfShape;
+    this.rotationSequence = rotationSequence;
+  }
+}
+
 class Mover {
   constructor(piece) {
     this.coords = piece.coords;
-    this.nameOfShape = piece.name;
+    this.nameOfShape = piece.nameOfShape;
     this.rotationSequence = piece.rotationSequence;
   }
 
@@ -52,11 +58,7 @@ class Mover {
       let [row, col] = coords;
       return [row + 1, col]
     });
-    return {
-      coords: coords,
-      name: this.nameOfShape,
-      rotationSequence: this.rotationSequence
-    }
+    return new Piece(coords, this.nameOfShape, this.rotationSequence);
   }
 
   left() {
@@ -65,11 +67,7 @@ class Mover {
       return [row, col - 1]
     })
 
-    return {
-      coords: coords,
-      name: this.nameOfShape,
-      rotationSequence: this.rotationSequence
-    }
+    return new Piece(coords, this.nameOfShape, this.rotationSequence);
   }
 
   right() {
@@ -78,21 +76,19 @@ class Mover {
       return [row, col + 1]
     })
 
-    return {
-      coords: coords,
-      name: this.nameOfShape,
-      rotationSequence: this.rotationSequence
-    }
+    return new Piece(coords, this.nameOfShape, this.rotationSequence);
   }
 
   rotateClockwise() {
     const allRotations = TetrisPieces[this.nameOfShape].rotations;
     const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length
-    return {
-      coords: this.coords,
-      name: this.nameOfShape,
-      rotationSequence: nextRotation
-    }
+    return new Piece(this.coords, this.nameOfShape, nextRotation);
+  }
+
+  rotateCounterClockwise() {
+    const allRotations = TetrisPieces[this.nameOfShape].rotations;
+    const nextRotation = (this.rotationSequence + allRotations.length - 1) % allRotations.length
+    return new Piece(this.coords, this.nameOfShape, nextRotation);
   }
 }
 
@@ -146,3 +142,4 @@ const TetrisPieces = {
 module.exports.Tetris = Tetris;
 module.exports.Board = Board;
 module.exports.Mover = Mover;
+module.exports.Piece = Piece;

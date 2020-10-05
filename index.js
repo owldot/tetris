@@ -1,4 +1,5 @@
-const { Tetris, Board } = require("./src/tetris.js");
+const { Tetris } = require("./src/tetris.js");
+const { Board } = require("./src/board.js");
 
 document.addEventListener('DOMContentLoaded', () => {
   const width = 10;

@@ -1,4 +1,8 @@
-const { Tetris, Board, Mover, Piece } = require('./src/tetris');
+const { Tetris } = require('./src/tetris');
+const { Board } = require('./src/board');
+const { Mover } = require('./src/mover');
+const { Piece } = require('./src/piece');
+const { TetrisPieces } = require('./src/tetrisPieces');
 
 test('Board is created', () => {
   let board = new Board(4, 5);

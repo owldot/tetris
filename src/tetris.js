@@ -10,7 +10,7 @@ class Tetris {
   }
 
   render() {
-    return this.board.area
+    return this.board.render(this.nextPiece);
   }
 
   pickRandomPiece() {

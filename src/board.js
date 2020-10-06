@@ -1,7 +1,4 @@
 class Board {
-  height = 20;
-  width = 10;
-  area;
   constructor(width = 10, height = 20) {
     this.width = width;
     this.height = height;
@@ -13,6 +10,21 @@ class Board {
       }
     }
   }
+
+  isValidMove(piece) {
+    return piece.coords.every(this.isValidCoordinate)
+  }
+
+  render(piece) {
+    if (this.isValidMove(piece)) {
+      piece.coords.forEach(([y, x]) => this.area[y][x] = 1)
+    }
+    return this.area;
+  }
+
+  isValidCoordinate = ([y, x]) => {
+    return (x >= 0 && y >= 0 && x < this.width && y < this.height && this.area[y][x] == 0)
+  };
 }
 
 module.exports.Board = Board;

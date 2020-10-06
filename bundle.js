@@ -18,9 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 },{"./src/board.js":2,"./src/tetris.js":5}],2:[function(require,module,exports){
 class Board {
-  height = 20;
-  width = 10;
-  area;
   constructor(width = 10, height = 20) {
     this.width = width;
     this.height = height;
@@ -32,6 +29,21 @@ class Board {
       }
     }
   }
+
+  isValidMove(piece) {
+    return piece.coords.every(this.isValidCoordinate)
+  }
+
+  render(piece) {
+    if (this.isValidMove(piece)) {
+      piece.coords.forEach(([y, x]) => this.area[y][x] = 1)
+    }
+    return this.area;
+  }
+
+  isValidCoordinate = ([y, x]) => {
+    return (x >= 0 && y >= 0 && x < this.width && y < this.height && this.area[y][x] == 0)
+  };
 }
 
 module.exports.Board = Board;
@@ -90,10 +102,6 @@ module.exports.Mover = Mover;
 
 },{"./piece":4,"./tetrisPieces":6}],4:[function(require,module,exports){
 class Piece {
-  coords;
-  nameOfShape;
-  rotationSequence;
-
   constructor(coords, nameOfShape, rotationSequence) {
     this.coords = coords;
     this.nameOfShape = nameOfShape;
@@ -116,7 +124,7 @@ class Tetris {
   }
 
   render() {
-    return this.board.area
+    return this.board.render(this.nextPiece);
   }
 
   pickRandomPiece() {

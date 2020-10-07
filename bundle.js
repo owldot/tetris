@@ -1,20 +1,40 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const { Tetris } = require("./src/tetris.js");
+const { Tetris, GameOverError } = require("./src/tetris.js");
 const { Board } = require("./src/board.js");
 
 document.addEventListener('DOMContentLoaded', () => {
   const width = 10;
-  const grid = document.querySelector('.grid');
-  const scoreDisplay = document.querySelector('#score');
-  const startBtn = document.querySelector('#start-button');
-  let squares = Array.from(document.querySelectorAll('.grid div'))
-  let board = new Board(10, 20);
-  let tetris = new Tetris(board);
+  // const scoreDisplay = document.querySelector('#score');
+  // const startBtn = document.querySelector('#start-button');
 
-  let state = tetris.render();
-  squares.forEach((square, index) => {
-    square.innerText = state[Math.floor(index / 10)][index % 10];
-  })
+  let squares = Array.from(document.querySelectorAll('.grid div'))
+  let tetris = new Tetris(10, 20);
+
+  let interval = setInterval(render.bind(this), 100);
+
+  function render() {
+    let state = tetris.placePiece();
+
+    squares.forEach((square, index) => {
+      let matrixElement = state[Math.floor(index / 10)][index % 10];
+      if (matrixElement === 1) {
+        square.classList.add('filled')
+      }
+      else {
+        square.classList.remove('filled')
+      }
+    })
+
+    try {
+      tetris.nextMove();
+    } catch (e) {
+      if (e instanceof GameOverError) {
+        clearInterval(interval)
+        console.log('caught game over')
+      }
+    }
+
+  }
 })
 },{"./src/board.js":2,"./src/tetris.js":5}],2:[function(require,module,exports){
 class Board {
@@ -41,8 +61,14 @@ class Board {
     return this.area;
   }
 
+  clearPiece(piece) {
+    piece.coords.forEach(([y, x]) => this.area[y][x] = 0)
+  }
+
   isValidCoordinate = ([y, x]) => {
-    return (x >= 0 && y >= 0 && x < this.width && y < this.height && this.area[y][x] == 0)
+    return (x >= 0 && y >= 0 && x < this.width && y < this.height
+      && this.area[y][x] == 0
+    )
   };
 }
 
@@ -118,13 +144,30 @@ const { Piece } = require('./piece');
 const { TetrisPieces } = require('./tetrisPieces');
 
 class Tetris {
-  constructor(board) {
-    this.board = board;
-    this.nextPiece = this.pickRandomPiece();
+  constructor(boardWidth, boardHeight) {
+    this.board = new Board(boardWidth, boardHeight);
+    this.piece = this.pickRandomPiece();
   }
 
-  render() {
-    return this.board.render(this.nextPiece);
+  placePiece() {
+    return this.board.render(this.piece);
+  }
+
+  nextMove() {
+    const mover = new Mover(this.piece);
+    this.board.clearPiece(this.piece)
+    if (this.board.isValidMove(mover.down())) {
+      this.piece = mover.down();
+      this.placePiece()
+    } else {
+      this.placePiece() // return back previously cleared element
+      this.piece = this.pickRandomPiece();
+
+      if (!this.board.isValidMove(this.piece)) {
+        throw new GameOverError('Game Over');
+      }
+
+    }
   }
 
   pickRandomPiece() {
@@ -136,7 +179,15 @@ class Tetris {
   }
 }
 
+class GameOverError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'GameOver';
+  }
+}
+
 module.exports.Tetris = Tetris;
+module.exports.GameOverError = GameOverError;
 
 },{"./board":2,"./mover":3,"./piece":4,"./tetrisPieces":6}],6:[function(require,module,exports){
 const TetrisPieces = {

@@ -22,8 +22,16 @@ class Board {
     return this.area;
   }
 
+  clearPiece(piece) {
+    piece.coords.forEach(([y, x]) => this.area[y][x] = 0)
+  }
+
   isValidCoordinate = ([y, x]) => {
-    return (x >= 0 && y >= 0 && x < this.width && y < this.height && this.area[y][x] == 0)
+    return (
+      x >= 0 && y >= 0
+      && x < this.width && y < this.height
+      && this.area[y][x] == 0
+    )
   };
 }
 

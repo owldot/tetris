@@ -49,3 +49,7 @@ h3 {
   box-sizing: border-box;
   color: green;
 }
+
+.grid .filled {
+  background-color: green;
+}

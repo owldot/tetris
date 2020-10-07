@@ -62,7 +62,7 @@ describe('Tetris', () => {
   test('Tetris is initiated', () => {
     let board = new Board(3, 4);
     let tetris = new Tetris(board);
-    expect(tetris.nextPiece).toBeDefined();
+    expect(tetris.piece).toBeDefined();
   });
 })
 

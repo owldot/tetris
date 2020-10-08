@@ -9,7 +9,25 @@ document.addEventListener('DOMContentLoaded', () => {
   let squares = Array.from(document.querySelectorAll('.grid div'))
   let tetris = new Tetris(10, 20);
 
-  let interval = setInterval(render.bind(this), 100);
+  let interval = setInterval(nextMoveDown.bind(this), 1000);
+  document.addEventListener('keydown', keyPush);
+  function keyPush(event) {
+    switch (event.keyCode) {
+      case 37:
+        tetris.moveLeft();
+        break;
+      case 38:
+        tetris.rotate();
+        break;
+      case 39:
+        tetris.moveRight()
+        break;
+      case 40:
+        tetris.moveDown();
+        break;
+    }
+    render()
+  }
 
   function render() {
     let state = tetris.placePiece();
@@ -23,15 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
         square.classList.remove('filled')
       }
     })
+  }
 
+  function nextMoveDown() {
     try {
-      tetris.nextMove();
+      tetris.moveDown();
+      render()
     } catch (e) {
       if (e instanceof GameOverError) {
         clearInterval(interval)
         console.log('caught game over')
       }
     }
-
   }
 })

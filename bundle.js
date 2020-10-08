@@ -10,7 +10,25 @@ document.addEventListener('DOMContentLoaded', () => {
   let squares = Array.from(document.querySelectorAll('.grid div'))
   let tetris = new Tetris(10, 20);
 
-  let interval = setInterval(render.bind(this), 100);
+  let interval = setInterval(nextMoveDown.bind(this), 1000);
+  document.addEventListener('keydown', keyPush);
+  function keyPush(event) {
+    switch (event.keyCode) {
+      case 37:
+        tetris.moveLeft();
+        break;
+      case 38:
+        tetris.rotate();
+        break;
+      case 39:
+        tetris.moveRight()
+        break;
+      case 40:
+        tetris.moveDown();
+        break;
+    }
+    render()
+  }
 
   function render() {
     let state = tetris.placePiece();
@@ -24,16 +42,18 @@ document.addEventListener('DOMContentLoaded', () => {
         square.classList.remove('filled')
       }
     })
+  }
 
+  function nextMoveDown() {
     try {
-      tetris.nextMove();
+      tetris.moveDown();
+      render()
     } catch (e) {
       if (e instanceof GameOverError) {
         clearInterval(interval)
         console.log('caught game over')
       }
     }
-
   }
 })
 },{"./src/board.js":2,"./src/tetris.js":5}],2:[function(require,module,exports){
@@ -66,7 +86,9 @@ class Board {
   }
 
   isValidCoordinate = ([y, x]) => {
-    return (x >= 0 && y >= 0 && x < this.width && y < this.height
+    return (
+      x >= 0 && y >= 0
+      && x < this.width && y < this.height
       && this.area[y][x] == 0
     )
   };
@@ -112,15 +134,20 @@ class Mover {
   }
 
   rotateClockwise() {
+    // debugger
     const allRotations = TetrisPieces[this.nameOfShape].rotations;
     const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length
-    return new Piece(this.coords, this.nameOfShape, nextRotation);
+    return new Piece(TetrisPieces[this.nameOfShape].rotations[nextRotation],
+      this.nameOfShape,
+      nextRotation);
   }
 
   rotateCounterClockwise() {
     const allRotations = TetrisPieces[this.nameOfShape].rotations;
     const nextRotation = (this.rotationSequence + allRotations.length - 1) % allRotations.length
-    return new Piece(this.coords, this.nameOfShape, nextRotation);
+    return new Piece(TetrisPieces[this.nameOfShape].rotations[nextRotation],
+      this.nameOfShape,
+      nextRotation);
   }
 }
 
@@ -153,7 +180,31 @@ class Tetris {
     return this.board.render(this.piece);
   }
 
-  nextMove() {
+  moveRight() {
+    const mover = new Mover(this.piece);
+
+    this.board.clearPiece(this.piece)
+    if (this.board.isValidMove(mover.right())) {
+      this.piece = mover.right();
+      return this.placePiece()
+    } else {
+      return this.placePiece()
+    }
+  }
+
+  moveLeft() {
+    const mover = new Mover(this.piece);
+
+    this.board.clearPiece(this.piece)
+    if (this.board.isValidMove(mover.left())) {
+      this.piece = mover.left();
+      this.placePiece()
+    } else {
+      this.placePiece()
+    }
+  }
+
+  moveDown() {
     const mover = new Mover(this.piece);
     this.board.clearPiece(this.piece)
     if (this.board.isValidMove(mover.down())) {
@@ -162,11 +213,21 @@ class Tetris {
     } else {
       this.placePiece() // return back previously cleared element
       this.piece = this.pickRandomPiece();
-
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
       }
+    }
+  }
 
+  rotate() {
+    const mover = new Mover(this.piece);
+
+    this.board.clearPiece(this.piece)
+    if (this.board.isValidMove(mover.rotateClockwise())) {
+      this.piece = mover.rotateClockwise();
+      this.placePiece()
+    } else {
+      this.placePiece()
     }
   }
 
@@ -202,10 +263,10 @@ const TetrisPieces = {
   },
   lLShape: {
     rotations: [
-      [[0, 0], [0, 1], [1, 0], [2, 0]],
-      [[0, 0], [0, 1], [0, 2], [1, 2]],
-      [[0, 2], [1, 2], [2, 1], [2, 2]],
-      [[1, 0], [2, 0], [2, 1], [2, 2]]
+      [[0, 0], [0, 1], [1, 1], [2, 1]],
+      [[0, 2], [1, 0], [1, 1], [1, 2]],
+      [[0, 1], [1, 1], [2, 1], [2, 2]],
+      [[1, 0], [1, 1], [1, 2], [2, 0]]
     ]
   },
   tShape: {
@@ -219,7 +280,7 @@ const TetrisPieces = {
   zLShape: {
     rotations: [
       [[0, 1], [1, 0], [1, 1], [2, 0]],
-      [[0, 0], [0, 1], [0, 2], [1, 1]]
+      [[0, 0], [0, 1], [1, 1], [1, 2]]
     ]
   },
   zRShape: {

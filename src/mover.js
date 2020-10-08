@@ -37,13 +37,17 @@ class Mover {
   rotateClockwise() {
     const allRotations = TetrisPieces[this.nameOfShape].rotations;
     const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length
-    return new Piece(this.coords, this.nameOfShape, nextRotation);
+    return new Piece(TetrisPieces[this.nameOfShape].rotations[nextRotation],
+      this.nameOfShape,
+      nextRotation);
   }
 
   rotateCounterClockwise() {
     const allRotations = TetrisPieces[this.nameOfShape].rotations;
     const nextRotation = (this.rotationSequence + allRotations.length - 1) % allRotations.length
-    return new Piece(this.coords, this.nameOfShape, nextRotation);
+    return new Piece(TetrisPieces[this.nameOfShape].rotations[nextRotation],
+      this.nameOfShape,
+      nextRotation);
   }
 }
 

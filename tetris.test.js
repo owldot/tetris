@@ -92,8 +92,8 @@ describe('Mover', () => {
   })
 
   test('Piece rotates clockwise', () => {
-    const piece = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 2);
-    const pieceNext = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 3);
+    const piece = new Piece([[0, 1], [1, 1], [2, 0], [2, 1]], 'lRShape', 2);
+    const pieceNext = new Piece([[1, 0], [2, 0], [2, 1], [2, 2]], 'lRShape', 3);
 
     const mover = new Mover(piece);
     expect(mover.rotateClockwise()).toEqual(pieceNext);
@@ -101,7 +101,7 @@ describe('Mover', () => {
 
   test('Piece rotates counterclockwise', () => {
     const piece = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 2);
-    const pieceNext = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 1);
+    const pieceNext = new Piece([[1, 0], [1, 1], [1, 2], [2, 2]], 'lRShape', 1);
 
     const mover = new Mover(piece);
     expect(mover.rotateCounterClockwise()).toEqual(pieceNext);
@@ -109,7 +109,7 @@ describe('Mover', () => {
 
   test('Piece rotates clockwise back to 0 sequence when overflows', () => {
     const piece = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 3);
-    const pieceNext = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 0);
+    const pieceNext = new Piece([[0, 1], [0, 2], [1, 1], [2, 1]], 'lRShape', 0);
 
     const mover = new Mover(piece);
     expect(mover.rotateClockwise()).toEqual(pieceNext);

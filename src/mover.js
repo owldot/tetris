@@ -35,9 +35,12 @@ class Mover {
   }
 
   rotateClockwise() {
+    const [shiftX, shiftY] = this.calculateShift();
     const allRotations = TetrisPieces[this.nameOfShape].rotations;
-    const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length
-    return new Piece(TetrisPieces[this.nameOfShape].rotations[nextRotation],
+    const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length;
+    const coords = TetrisPieces[this.nameOfShape].rotations[nextRotation].map(([row, col]) => [row + shiftY, col + shiftX])
+
+    return new Piece(coords,
       this.nameOfShape,
       nextRotation);
   }
@@ -48,6 +51,16 @@ class Mover {
     return new Piece(TetrisPieces[this.nameOfShape].rotations[nextRotation],
       this.nameOfShape,
       nextRotation);
+  }
+
+  calculateShift() {
+    let shiftX = Infinity;
+    let shiftY = Infinity;
+    this.coords.forEach(([y, x]) => {
+      shiftX = (shiftX > x) ? x : shiftX;
+      shiftY = (shiftY > y) ? y : shiftY;
+    })
+    return [shiftX, shiftY]
   }
 }
 

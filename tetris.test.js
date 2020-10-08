@@ -124,8 +124,8 @@ describe('Mover', () => {
   })
 
   test('Piece rotates clockwise considering it\'s current coordinates', () => {
-    const piece = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 2);
-    const pieceNext = new Piece([[0, 1], [0, 2], [1, 1], [2, 1]], 'lRShape', 3);
+    const piece = new Piece([[4, 5], [5, 5], [6, 5], [6, 4]], 'lRShape', 2);
+    const pieceNext = new Piece([[5, 4], [6, 4], [6, 5], [6, 6]], 'lRShape', 3);
 
     const mover = new Mover(piece);
     expect(mover.rotateClockwise()).toEqual(pieceNext);

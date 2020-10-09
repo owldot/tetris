@@ -4,10 +4,7 @@ class Board {
     this.height = height;
     this.area = new Array(height);
     for (let row = 0; row < this.height; row++) {
-      this.area[row] = new Array(width);
-      for (let col = 0; col < this.width; col++) {
-        this.area[row][col] = 0
-      }
+      this.area[row] = new Array(width).fill(0);
     }
   }
 
@@ -33,6 +30,37 @@ class Board {
       && this.area[y][x] == 0
     )
   };
+
+  clearFullLines() {
+    const rowIndexes = this.detectFullRows();
+    rowIndexes.forEach((index) => {
+      this.clearRow(index);
+    })
+
+    if (rowIndexes.length > 0) {
+      rowIndexes.forEach((index) => {
+        this.area.splice(index, 1);
+        this.area.splice(0, 0, new Array(this.width).fill(0));
+      })
+
+    }
+
+    return rowIndexes.length;
+  }
+
+  clearRow(index) {
+    this.area[index] = new Array(this.width).fill(0);
+  }
+
+  detectFullRows() {
+    let rows = [];
+    this.area.forEach((row, index) => {
+      if (row.every((cell) => cell == 1)) {
+        rows.push(index);
+      }
+    })
+    return rows
+  }
 }
 
 module.exports.Board = Board;

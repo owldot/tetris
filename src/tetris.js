@@ -7,6 +7,7 @@ class Tetris {
   constructor(boardWidth, boardHeight) {
     this.board = new Board(boardWidth, boardHeight);
     this.piece = this.pickRandomPiece();
+    this.score = 0;
   }
 
   placePiece() {
@@ -45,6 +46,7 @@ class Tetris {
       this.placePiece()
     } else {
       this.placePiece() // return back previously cleared element
+      this.score += this.board.clearFullLines();
       this.piece = this.pickRandomPiece();
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');

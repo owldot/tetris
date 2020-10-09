@@ -3,13 +3,13 @@ const { Board } = require("./src/board.js");
 
 document.addEventListener('DOMContentLoaded', () => {
   const width = 10;
-  // const scoreDisplay = document.querySelector('#score');
+  const scoreDisplay = document.querySelector('#score');
   // const startBtn = document.querySelector('#start-button');
 
   let squares = Array.from(document.querySelectorAll('.grid div'))
   let tetris = new Tetris(10, 20);
 
-  let interval = setInterval(nextMoveDown.bind(this), 1000);
+  let interval = setInterval(nextMoveDown.bind(this), 700);
   document.addEventListener('keydown', keyPush);
   function keyPush(event) {
     switch (event.keyCode) {
@@ -46,7 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function nextMoveDown() {
     try {
       tetris.moveDown();
-      render()
+      render();
+      scoreDisplay.innerText = tetris.score;
     } catch (e) {
       if (e instanceof GameOverError) {
         clearInterval(interval)

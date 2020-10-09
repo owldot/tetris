@@ -4,13 +4,13 @@ const { Board } = require("./src/board.js");
 
 document.addEventListener('DOMContentLoaded', () => {
   const width = 10;
-  // const scoreDisplay = document.querySelector('#score');
+  const scoreDisplay = document.querySelector('#score');
   // const startBtn = document.querySelector('#start-button');
 
   let squares = Array.from(document.querySelectorAll('.grid div'))
   let tetris = new Tetris(10, 20);
 
-  let interval = setInterval(nextMoveDown.bind(this), 1000);
+  let interval = setInterval(nextMoveDown.bind(this), 700);
   document.addEventListener('keydown', keyPush);
   function keyPush(event) {
     switch (event.keyCode) {
@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function nextMoveDown() {
     try {
       tetris.moveDown();
-      render()
+      render();
+      scoreDisplay.innerText = tetris.score;
     } catch (e) {
       if (e instanceof GameOverError) {
         clearInterval(interval)
@@ -63,10 +64,7 @@ class Board {
     this.height = height;
     this.area = new Array(height);
     for (let row = 0; row < this.height; row++) {
-      this.area[row] = new Array(width);
-      for (let col = 0; col < this.width; col++) {
-        this.area[row][col] = 0
-      }
+      this.area[row] = new Array(width).fill(0);
     }
   }
 
@@ -92,6 +90,35 @@ class Board {
       && this.area[y][x] == 0
     )
   };
+
+  clearFullLines() {
+    const rowIndexes = this.detectFullRows();
+    rowIndexes.forEach((index) => {
+      this.clearRow(index);
+    })
+
+    if (rowIndexes.length > 0) {
+      rowIndexes.forEach((index) => {
+        this.area.splice(index, 1);
+        this.area.splice(0, 0, new Array(this.width).fill(0));
+      })
+
+    }
+
+    return rowIndexes.length;
+  }
+  clearRow(index) {
+    this.area[index] = new Array(this.width).fill(0);
+  }
+  detectFullRows() {
+    let rows = [];
+    this.area.forEach((row, index) => {
+      if (row.every((cell) => cell == 1)) {
+        rows.push(index);
+      }
+    })
+    return rows
+  }
 }
 
 module.exports.Board = Board;
@@ -186,6 +213,7 @@ class Tetris {
   constructor(boardWidth, boardHeight) {
     this.board = new Board(boardWidth, boardHeight);
     this.piece = this.pickRandomPiece();
+    this.score = 0;
   }
 
   placePiece() {
@@ -224,6 +252,7 @@ class Tetris {
       this.placePiece()
     } else {
       this.placePiece() // return back previously cleared element
+      this.score += this.board.clearFullLines();
       this.piece = this.pickRandomPiece();
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');

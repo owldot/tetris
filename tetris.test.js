@@ -56,6 +56,65 @@ describe('Board', () => {
     const area = [[0, 0, 1, 1], [0, 0, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
     expect(board.render(piece)).toEqual(area);
   })
+
+  test('detectFullRows no rows', () => {
+    let board = new Board(4, 5);
+    board.area = [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1]];
+    expect(board.detectFullRows()).toEqual([])
+  })
+
+  test('detectFullRows row 4 only', () => {
+    let board = new Board(4, 5);
+    board.area = [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1], [0, 0, 1, 1], [1, 1, 1, 1]];
+    expect(board.detectFullRows()).toEqual([4])
+  })
+
+  test('detectFullRows #3 and #4 rows', () => {
+    let board = new Board(4, 5);
+    board.area = [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1], [1, 1, 1, 1], [1, 1, 1, 1]];
+    expect(board.detectFullRows()).toEqual([3, 4])
+  })
+
+  test('clearRow #3', () => {
+    let board = new Board(4, 5);
+    board.area = [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1], [1, 1, 1, 1], [1, 1, 1, 1]];
+    const expectedArea = [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1], [0, 0, 0, 0], [1, 1, 1, 1]];
+    board.clearRow(3);
+    expect(board.area).toEqual(expectedArea);
+  })
+
+  test('clearFullRow 0', () => {
+    let board = new Board(4, 5);
+    board.area = [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1], [0, 0, 1, 1], [1, 1, 0, 1]];
+    const expectedArea = [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1], [0, 0, 1, 1], [1, 1, 0, 1]];
+    expect(board.clearFullLines()).toBe(0);
+    expect(board.area).toEqual(expectedArea);
+  })
+
+  test('clearFullRow 1 row', () => {
+    let board = new Board(4, 5);
+    board.area = [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1], [0, 0, 1, 1], [1, 1, 1, 1]];
+    const expectedArea = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1], [0, 0, 1, 1]];
+    expect(board.clearFullLines()).toBe(1);
+    expect(board.area).toEqual(expectedArea);
+  })
+
+  test('clearFullRow 2 rows', () => {
+    let board = new Board(4, 5);
+    board.area = [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]];
+    const expectedArea = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 1, 1]];
+    expect(board.clearFullLines()).toBe(2);
+    console.log(board.area)
+    expect(board.area).toEqual(expectedArea);
+  })
+
+  test('clearFullRow 2 rows with hole in the middle', () => {
+    let board = new Board(4, 5);
+    board.area = [[0, 0, 0, 0], [0, 0, 0, 1], [1, 1, 1, 1], [1, 1, 0, 1], [1, 1, 1, 1]];
+    const expectedArea = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 1], [1, 1, 0, 1]];
+    expect(board.clearFullLines()).toBe(2);
+    expect(board.area).toEqual(expectedArea);
+  })
 })
 
 describe('Tetris', () => {

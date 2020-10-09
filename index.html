@@ -11,14 +11,15 @@
 
 <body>
   <h1>
-    Andrew and Lana's Tetris R
+    Andrew and Lana's Tetris
   </h1>
   <h3>Score: <span id="score">0</span></h3>
   <button class='start' id='start-button'>Start!</button>
 
-
   <div class="grid" id="grid">
   </div>
+  <h5 class="yellow">Press escape button to pause the game.</h5>
+  <h5 class="grey">Svitlana Dzyuban &copy; 2020</h5>
   <script lang="javascript">
 
     let container = document.getElementById('grid')
@@ -28,6 +29,9 @@
 
   </script>
 
+  <div class="pauseLabel hidden">
+    <div id="pauseLabel">Paused</div>
+  </div>
 </body>
 
 </html>

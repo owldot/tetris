@@ -152,7 +152,24 @@ describe('Tetris', () => {
       [0, 0, 0, 0, 0]
     ];
     tetris.rotate();
-    console.log("----->", tetris.board.area);
+    expect(tetris.board.area).toEqual(expectedArea);
+  })
+
+  test('Drop shape - empty board', () => {
+    let tetris = new Tetris(5, 6);
+
+    const piece = new Piece([[1, 4], [2, 4], [3, 4], [4, 4]], 'iShape', 1);
+    tetris.piece = piece;
+    tetris.placePiece();
+    const expectedArea = [
+      [0, 0, 0, 0, 0],
+      [0, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0]
+    ];
+    tetris.rotate();
     expect(tetris.board.area).toEqual(expectedArea);
   })
 })

@@ -54,6 +54,22 @@ class Tetris {
     }
   }
 
+  drop() {
+    let mover = new Mover(this.piece);
+    while (true) {
+      this.board.clearPiece(this.piece)
+      if (this.board.isValidMove(mover.down())) {
+        this.piece = mover.down();
+        this.placePiece()
+        console.log('here')
+        mover = new Mover(this.piece);
+      } else {
+        this.placePiece() // return back previously cleared element
+        break;
+      }
+    }
+  }
+
   rotate() {
     const mover = new Mover(this.piece);
 

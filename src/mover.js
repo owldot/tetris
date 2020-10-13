@@ -37,7 +37,7 @@ class Mover {
   rotateClockwiseWithShift(maxAllowedX) {
     let piece = this._rotateClockwise();
 
-    let maxX = piece.maxX();
+    let maxX = piece.mostRightX();
 
     if (maxX >= maxAllowedX) {
       piece.shiftXCoordBy(maxX - maxAllowedX);

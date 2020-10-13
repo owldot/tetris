@@ -76,6 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
         break;
+      case 32:
+        tetris.drop()
     }
     render()
   }

@@ -76,8 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
             gameOver();
           }
         }
-
         break;
+      case 32:
+        tetris.drop()
     }
     render()
   }
@@ -159,6 +160,16 @@ class Board {
     return rowIndexes.length;
   }
 
+  getYOfFirstFilledLineInXRange(fromX, toX) {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = fromX; x <= toX; x++)
+        if (this.area[y][x] == 1) {
+          return y
+        }
+    }
+    return this.height - 1
+  }
+
   clearRow(index) {
     this.area[index] = new Array(this.width).fill(0);
   }
@@ -216,7 +227,7 @@ class Mover {
   rotateClockwiseWithShift(maxAllowedX) {
     let piece = this._rotateClockwise();
 
-    let maxX = piece.maxX();
+    let maxX = piece.mostRightX();
 
     if (maxX >= maxAllowedX) {
       piece.shiftXCoordBy(maxX - maxAllowedX);
@@ -256,12 +267,20 @@ class Piece {
     this.rotationSequence = rotationSequence;
   }
 
-  maxX() {
+  mostRightX() {
     let max = 0;
     this.coords.forEach(([y, x]) => {
       max = (max < x) ? x : max;
     })
     return max;
+  }
+
+  mostLeftX() {
+    let min = Infinity;
+    this.coords.forEach(([y, x]) => {
+      min = (min > x) ? x : min;
+    })
+    return min;
   }
 
   shiftXCoordBy(units) {
@@ -328,6 +347,22 @@ class Tetris {
       this.piece = this.pickRandomPiece();
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
+      }
+    }
+  }
+
+  drop() {
+    let mover = new Mover(this.piece);
+    while (true) {
+      this.board.clearPiece(this.piece)
+      if (this.board.isValidMove(mover.down())) {
+        this.piece = mover.down();
+        this.placePiece()
+        console.log('here')
+        mover = new Mover(this.piece);
+      } else {
+        this.placePiece() // return back previously cleared element
+        break;
       }
     }
   }

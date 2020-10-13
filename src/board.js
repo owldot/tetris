@@ -48,6 +48,16 @@ class Board {
     return rowIndexes.length;
   }
 
+  getYOfFirstFilledLineInXRange(fromX, toX) {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = fromX; x <= toX; x++)
+        if (this.area[y][x] == 1) {
+          return y
+        }
+    }
+    return this.height - 1
+  }
+
   clearRow(index) {
     this.area[index] = new Array(this.width).fill(0);
   }

@@ -5,12 +5,20 @@ class Piece {
     this.rotationSequence = rotationSequence;
   }
 
-  maxX() {
+  mostRightX() {
     let max = 0;
     this.coords.forEach(([y, x]) => {
       max = (max < x) ? x : max;
     })
     return max;
+  }
+
+  mostLeftX() {
+    let min = Infinity;
+    this.coords.forEach(([y, x]) => {
+      min = (min > x) ? x : min;
+    })
+    return min;
   }
 
   shiftXCoordBy(units) {

@@ -115,6 +115,19 @@ describe('Board', () => {
     expect(board.clearFullLines()).toBe(2);
     expect(board.area).toEqual(expectedArea);
   })
+
+  test('getYOfFirstFilledLineInXRange - find the most top y of filled cells', () => {
+    let board = new Board(4, 5);
+    board.area = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [1, 0, 0, 0],
+      [1, 1, 0, 0],
+      [1, 1, 1, 0]];
+    expect(board.getYOfFirstFilledLineInXRange(0, 2)).toBe(2);
+    expect(board.getYOfFirstFilledLineInXRange(1, 2)).toBe(3);
+    expect(board.getYOfFirstFilledLineInXRange(3, 3)).toBe(4);
+  })
 })
 
 describe('Tetris', () => {

@@ -123,6 +123,25 @@ describe('Tetris', () => {
     let tetris = new Tetris(board);
     expect(tetris.piece).toBeDefined();
   });
+
+  test('Vertical I-shape rotates near right border', () => {
+    let tetris = new Tetris(5, 6);
+
+    const piece = new Piece([[1, 4], [2, 4], [3, 4], [4, 4]], 'iShape', 1);
+    tetris.piece = piece;
+    tetris.placePiece();
+    const expectedArea = [
+      [0, 0, 0, 0, 0],
+      [0, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0]
+    ];
+    tetris.rotate();
+    console.log("----->", tetris.board.area);
+    expect(tetris.board.area).toEqual(expectedArea);
+  })
 })
 
 describe('Mover', () => {
@@ -155,15 +174,7 @@ describe('Mover', () => {
     const pieceNext = new Piece([[1, 0], [2, 0], [2, 1], [2, 2]], 'lRShape', 3);
 
     const mover = new Mover(piece);
-    expect(mover.rotateClockwise()).toEqual(pieceNext);
-  })
-
-  test('Piece rotates counterclockwise', () => {
-    const piece = new Piece([[0, 2], [1, 2], [2, 1], [2, 2]], 'lRShape', 2);
-    const pieceNext = new Piece([[1, 0], [1, 1], [1, 2], [2, 2]], 'lRShape', 1);
-
-    const mover = new Mover(piece);
-    expect(mover.rotateCounterClockwise()).toEqual(pieceNext);
+    expect(mover._rotateClockwise()).toEqual(pieceNext);
   })
 
   test('Piece rotates clockwise back to 0 sequence when overflows', () => {
@@ -171,7 +182,7 @@ describe('Mover', () => {
     const pieceNext = new Piece([[0, 1], [0, 2], [1, 1], [2, 1]], 'lRShape', 0);
 
     const mover = new Mover(piece);
-    expect(mover.rotateClockwise()).toEqual(pieceNext);
+    expect(mover._rotateClockwise()).toEqual(pieceNext);
   })
 
   test('Piece square shape doesn\'t rotate', () => {
@@ -179,7 +190,7 @@ describe('Mover', () => {
     const pieceNext = new Piece([[0, 0], [0, 1], [1, 0], [1, 1]], 'square', 0);
 
     const mover = new Mover(piece);
-    expect(mover.rotateClockwise()).toEqual(pieceNext);
+    expect(mover._rotateClockwise()).toEqual(pieceNext);
   })
 
   test('Piece rotates clockwise considering it\'s current coordinates', () => {
@@ -187,6 +198,15 @@ describe('Mover', () => {
     const pieceNext = new Piece([[5, 4], [6, 4], [6, 5], [6, 6]], 'lRShape', 3);
 
     const mover = new Mover(piece);
-    expect(mover.rotateClockwise()).toEqual(pieceNext);
+    expect(mover._rotateClockwise()).toEqual(pieceNext);
   })
+
+  test('Piece shifts from wall', () => {
+    const piece = new Piece([[1, 4], [2, 4], [3, 4], [4, 4]], 'iShape', 1);
+    const pieceExpected = new Piece([[1, 1], [1, 2], [1, 3], [1, 4]], 'iShape', 0);
+
+    const mover = new Mover(piece);
+    expect(mover.rotateClockwiseWithShift(4)).toEqual(pieceExpected);
+  })
+
 })

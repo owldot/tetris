@@ -57,9 +57,10 @@ class Tetris {
   rotate() {
     const mover = new Mover(this.piece);
 
-    this.board.clearPiece(this.piece)
-    if (this.board.isValidMove(mover.rotateClockwise())) {
-      this.piece = mover.rotateClockwise();
+    this.board.clearPiece(this.piece);
+    const limitX = this.board.width - 1;
+    if (this.board.isValidMove(mover.rotateClockwiseWithShift(limitX))) {
+      this.piece = mover.rotateClockwiseWithShift(limitX);
       this.placePiece()
     } else {
       this.placePiece()

@@ -188,23 +188,16 @@ class Mover {
     return new Piece(coords, this.nameOfShape, this.rotationSequence);
   }
 
-  rotateClockwise() {
-    const [shiftX, shiftY] = this.calculateShift();
-    const allRotations = TetrisPieces[this.nameOfShape].rotations;
-    const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length;
-    const coords = TetrisPieces[this.nameOfShape].rotations[nextRotation].map(([row, col]) => [row + shiftY, col + shiftX])
+  rotateClockwiseWithShift(maxAllowedX) {
+    let piece = this._rotateClockwise();
 
-    return new Piece(coords,
-      this.nameOfShape,
-      nextRotation);
-  }
+    let maxX = piece.maxX();
 
-  rotateCounterClockwise() {
-    const allRotations = TetrisPieces[this.nameOfShape].rotations;
-    const nextRotation = (this.rotationSequence + allRotations.length - 1) % allRotations.length
-    return new Piece(TetrisPieces[this.nameOfShape].rotations[nextRotation],
-      this.nameOfShape,
-      nextRotation);
+    if (maxX >= maxAllowedX) {
+      piece.shiftXCoordBy(maxX - maxAllowedX);
+    }
+
+    return piece;
   }
 
   calculateShift() {
@@ -216,6 +209,16 @@ class Mover {
     })
     return [shiftX, shiftY]
   }
+
+  _rotateClockwise() {
+    const [shiftX, shiftY] = this.calculateShift();
+    const allRotations = TetrisPieces[this.nameOfShape].rotations;
+    const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length;
+    const coords = TetrisPieces[this.nameOfShape].rotations[nextRotation].map(([row, col]) => [row + shiftY, col + shiftX])
+    return new Piece(coords,
+      this.nameOfShape,
+      nextRotation);
+  }
 }
 
 module.exports.Mover = Mover;
@@ -226,6 +229,22 @@ class Piece {
     this.coords = coords;
     this.nameOfShape = nameOfShape;
     this.rotationSequence = rotationSequence;
+  }
+
+  maxX() {
+    let max = 0;
+    this.coords.forEach(([y, x]) => {
+      max = (max < x) ? x : max;
+    })
+    return max;
+  }
+
+  shiftXCoordBy(units) {
+    const shiftedCoords = this.coords.map((coords) => {
+      let [row, col] = coords;
+      return [row, col - units]
+    })
+    this.coords = shiftedCoords;
   }
 }
 
@@ -291,9 +310,10 @@ class Tetris {
   rotate() {
     const mover = new Mover(this.piece);
 
-    this.board.clearPiece(this.piece)
-    if (this.board.isValidMove(mover.rotateClockwise())) {
-      this.piece = mover.rotateClockwise();
+    this.board.clearPiece(this.piece);
+    const limitX = this.board.width - 1;
+    if (this.board.isValidMove(mover.rotateClockwiseWithShift(limitX))) {
+      this.piece = mover.rotateClockwiseWithShift(limitX);
       this.placePiece()
     } else {
       this.placePiece()
@@ -360,8 +380,8 @@ const TetrisPieces = {
   },
   iShape: {
     rotations: [
-      [[1, 0], [1, 1], [1, 2], [1, 3]],
-      [[0, 0], [1, 0], [2, 0], [3, 0]]
+      [[0, 0], [0, 1], [0, 2], [0, 3]],
+      [[0, 1], [1, 1], [2, 1], [3, 1]]
     ]
   },
 }

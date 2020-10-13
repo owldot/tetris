@@ -34,23 +34,16 @@ class Mover {
     return new Piece(coords, this.nameOfShape, this.rotationSequence);
   }
 
-  rotateClockwise() {
-    const [shiftX, shiftY] = this.calculateShift();
-    const allRotations = TetrisPieces[this.nameOfShape].rotations;
-    const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length;
-    const coords = TetrisPieces[this.nameOfShape].rotations[nextRotation].map(([row, col]) => [row + shiftY, col + shiftX])
+  rotateClockwiseWithShift(maxAllowedX) {
+    let piece = this._rotateClockwise();
 
-    return new Piece(coords,
-      this.nameOfShape,
-      nextRotation);
-  }
+    let maxX = piece.maxX();
 
-  rotateCounterClockwise() {
-    const allRotations = TetrisPieces[this.nameOfShape].rotations;
-    const nextRotation = (this.rotationSequence + allRotations.length - 1) % allRotations.length
-    return new Piece(TetrisPieces[this.nameOfShape].rotations[nextRotation],
-      this.nameOfShape,
-      nextRotation);
+    if (maxX >= maxAllowedX) {
+      piece.shiftXCoordBy(maxX - maxAllowedX);
+    }
+
+    return piece;
   }
 
   calculateShift() {
@@ -61,6 +54,16 @@ class Mover {
       shiftY = (shiftY > y) ? y : shiftY;
     })
     return [shiftX, shiftY]
+  }
+
+  _rotateClockwise() {
+    const [shiftX, shiftY] = this.calculateShift();
+    const allRotations = TetrisPieces[this.nameOfShape].rotations;
+    const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length;
+    const coords = TetrisPieces[this.nameOfShape].rotations[nextRotation].map(([row, col]) => [row + shiftY, col + shiftX])
+    return new Piece(coords,
+      this.nameOfShape,
+      nextRotation);
   }
 }
 

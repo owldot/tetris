@@ -83,15 +83,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function render() {
-    let state = tetris.placePiece();
+    let state = tetris.board.area;
 
     squares.forEach((square, index) => {
       let matrixElement = state[Math.floor(index / 10)][index % 10];
       if (matrixElement === 1) {
-        square.classList.add('filled')
+        const cssClassName = tetris.piece.color;
+        square.classList.add('filled');
+        if (square.classList.length == 1) { // Testing if color was already assigned
+          square.classList.add(cssClassName);
+        }
       }
       else {
-        square.classList.remove('filled')
+        square.className = ''; // Clear all colors
       }
     })
   }

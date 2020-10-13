@@ -1,8 +1,19 @@
+const Colors = {
+  lRShape: 'red',
+  lLShape: 'yellow',
+  tShape: 'blue',
+  zLShape: 'white',
+  zRShape: 'green',
+  iShape: 'purple',
+  square: 'cyan'
+}
+
 class Piece {
   constructor(coords, nameOfShape, rotationSequence) {
     this.coords = coords;
     this.nameOfShape = nameOfShape;
     this.rotationSequence = rotationSequence;
+    this.color = Colors[nameOfShape];
   }
 
   mostRightX() {

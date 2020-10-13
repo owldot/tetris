@@ -55,8 +55,39 @@ h1, h3, h5 {
   color: green;
 }
 
-.grid .filled {
-  background-color: green;
+.grid .filled.green {
+  background: rgb(167,213,41);
+  background: radial-gradient(circle, rgb(167, 213, 41) 0%, rgb(91, 158, 29) 100%);
+}
+
+.grid .filled.red {
+  background: rgb(247,112,0);
+  background: radial-gradient(circle, rgba(247,112,0,1) 0%, rgba(176,22,22,1) 100%);
+}
+
+.grid .filled.yellow {
+  background: rgb(235,222,168);
+  background: radial-gradient(circle, rgb(253, 253, 0) 0%, rgb(187, 145, 5) 100%);
+}
+
+.grid .filled.blue {
+  background: rgb(87,141,250);
+  background: radial-gradient(circle, rgba(87,141,250,1) 0%, rgba(93,113,219,1) 100%);
+}
+
+.grid .filled.white {
+  background: rgb(227,227,227);
+  background: radial-gradient(circle, rgba(227,227,227,1) 0%, rgba(177,177,177,1) 100%);
+}
+
+.grid .filled.purple {
+  background: rgb(225,155,251);
+  background: radial-gradient(circle, rgba(225,155,251,1) 0%, rgba(164,93,219,1) 100%);
+}
+
+.grid .filled.cyan {
+  background: rgb(159,232,240);
+  background: radial-gradient(circle, rgba(159,232,240,1) 0%, rgba(7,141,148,1) 100%);
 }
 
 .centerLabel {

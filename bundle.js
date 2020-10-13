@@ -84,15 +84,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function render() {
-    let state = tetris.placePiece();
+    let state = tetris.board.area;
 
     squares.forEach((square, index) => {
       let matrixElement = state[Math.floor(index / 10)][index % 10];
       if (matrixElement === 1) {
-        square.classList.add('filled')
+        const cssClassName = tetris.piece.color;
+        square.classList.add('filled');
+        if (square.classList.length == 1) { // Testing if color was already assigned
+          square.classList.add(cssClassName);
+        }
       }
       else {
-        square.classList.remove('filled')
+        square.className = ''; // Clear all colors
       }
     })
   }
@@ -260,11 +264,22 @@ class Mover {
 module.exports.Mover = Mover;
 
 },{"./piece":4,"./tetrisPieces":6}],4:[function(require,module,exports){
+const Colors = {
+  lRShape: 'red',
+  lLShape: 'yellow',
+  tShape: 'blue',
+  zLShape: 'white',
+  zRShape: 'green',
+  iShape: 'purple',
+  square: 'cyan'
+}
+
 class Piece {
   constructor(coords, nameOfShape, rotationSequence) {
     this.coords = coords;
     this.nameOfShape = nameOfShape;
     this.rotationSequence = rotationSequence;
+    this.color = Colors[nameOfShape];
   }
 
   mostRightX() {

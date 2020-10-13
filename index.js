@@ -2,12 +2,12 @@ const { Tetris, GameOverError } = require("./src/tetris.js");
 const { Board } = require("./src/board.js");
 
 document.addEventListener('DOMContentLoaded', () => {
-  const width = 10;
   const scoreDisplay = document.querySelector('#score');
   const startBtn = document.querySelector('#start-button');
   const resumeBtn = document.querySelector('#resume-button');
   const label = document.querySelector('#label');
   const labelDrop = document.querySelector('.centerLabel');
+
   document.addEventListener('keydown', listenKeyMove);
   document.addEventListener('keydown', listenKeyPause);
   startBtn.addEventListener('click', startNewGame);
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function gameOver() {
     clearInterval(interval);
     labelDrop.classList.remove('hidden')
-    label.innerText = 'Game Over'
+    label.innerText = 'Game Over';
     resumeBtn.classList.add('hidden');
     startBtn.classList.remove('hidden');
     document.removeEventListener('keydown', listenKeyMove);
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       clearInterval(interval);
     } else {
       document.addEventListener('keydown', listenKeyMove);
-      labelDrop.classList.add('hidden')
+      labelDrop.classList.add('hidden');
       resumeBtn.classList.remove('hidden');
       interval = setInterval(nextMoveDown.bind(this), 700);
     }

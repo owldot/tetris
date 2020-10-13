@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const width = 10;
   const scoreDisplay = document.querySelector('#score');
   const startBtn = document.querySelector('#start-button');
-  const pauseLabel = document.querySelector('#pauseLabel');
+  const label = document.querySelector('#label');
+  const labelDrop = document.querySelector('.centerLabel');
   document.addEventListener('keydown', listenKeyMove);
   document.addEventListener('keydown', listenKeyPause);
   startBtn.addEventListener('click', startNewGame);
@@ -21,12 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
       case 27:
         togglePause = !togglePause;
         if (togglePause) {
-          pauseLabel.parentElement.classList.remove('hidden')
+          labelDrop.classList.remove('hidden');
+          label.innerText = 'Paused';
+          startBtn.classList.add('hidden');
           document.removeEventListener('keydown', listenKeyMove);
           clearInterval(interval);
         } else {
           document.addEventListener('keydown', listenKeyMove);
-          pauseLabel.parentElement.classList.add('hidden')
+          labelDrop.classList.add('hidden')
           interval = setInterval(nextMoveDown.bind(this), 700);
         }
         break;
@@ -35,6 +38,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function startNewGame() {
     tetris = new Tetris(10, 20);
+    clearInterval(interval);
+    togglePause = false;
+    labelDrop.classList.add('hidden');
+    document.addEventListener('keydown', listenKeyMove);
+    document.addEventListener('keydown', listenKeyPause);
+    interval = setInterval(nextMoveDown.bind(this), 600);
+  }
+
+  function gameOver() {
+    clearInterval(interval);
+    labelDrop.classList.remove('hidden')
+    label.innerText = 'Game Over'
+    startBtn.classList.remove('hidden');
+    document.removeEventListener('keydown', listenKeyMove);
+    document.removeEventListener('keydown', listenKeyPause);
   }
 
   function listenKeyMove(event) {
@@ -49,7 +67,14 @@ document.addEventListener('DOMContentLoaded', () => {
         tetris.moveRight()
         break;
       case 40:
-        tetris.moveDown();
+        try {
+          tetris.moveDown();
+        }
+        catch (e) {
+          if (e instanceof GameOverError) {
+            gameOver();
+          }
+        }
         break;
     }
     render()
@@ -76,8 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
       scoreDisplay.innerText = tetris.score;
     } catch (e) {
       if (e instanceof GameOverError) {
-        clearInterval(interval)
-        console.log('caught game over')
+        gameOver();
       }
     }
   }

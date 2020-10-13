@@ -6,11 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const width = 10;
   const scoreDisplay = document.querySelector('#score');
   const startBtn = document.querySelector('#start-button');
+  const resumeBtn = document.querySelector('#resume-button');
   const label = document.querySelector('#label');
   const labelDrop = document.querySelector('.centerLabel');
   document.addEventListener('keydown', listenKeyMove);
   document.addEventListener('keydown', listenKeyPause);
   startBtn.addEventListener('click', startNewGame);
+  resumeBtn.addEventListener('click', pauseGame);
 
   let squares = Array.from(document.querySelectorAll('.grid div'))
   let tetris = new Tetris(10, 20);
@@ -21,18 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function listenKeyPause(event) {
     switch (event.keyCode) {
       case 27:
-        togglePause = !togglePause;
-        if (togglePause) {
-          labelDrop.classList.remove('hidden');
-          label.innerText = 'Paused';
-          startBtn.classList.add('hidden');
-          document.removeEventListener('keydown', listenKeyMove);
-          clearInterval(interval);
-        } else {
-          document.addEventListener('keydown', listenKeyMove);
-          labelDrop.classList.add('hidden')
-          interval = setInterval(nextMoveDown.bind(this), 700);
-        }
+        pauseGame();
         break;
     }
   }
@@ -51,9 +42,27 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(interval);
     labelDrop.classList.remove('hidden')
     label.innerText = 'Game Over'
+    resumeBtn.classList.add('hidden');
     startBtn.classList.remove('hidden');
     document.removeEventListener('keydown', listenKeyMove);
     document.removeEventListener('keydown', listenKeyPause);
+  }
+
+  function pauseGame() {
+    togglePause = !togglePause;
+    if (togglePause) {
+      labelDrop.classList.remove('hidden');
+      label.innerText = 'Paused';
+      startBtn.classList.add('hidden');
+      resumeBtn.classList.remove('hidden');
+      document.removeEventListener('keydown', listenKeyMove);
+      clearInterval(interval);
+    } else {
+      document.addEventListener('keydown', listenKeyMove);
+      labelDrop.classList.add('hidden')
+      resumeBtn.classList.remove('hidden');
+      interval = setInterval(nextMoveDown.bind(this), 700);
+    }
   }
 
   function listenKeyMove(event) {

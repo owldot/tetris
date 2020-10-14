@@ -7,6 +7,7 @@ class Tetris {
   constructor(boardWidth, boardHeight) {
     this.board = new Board(boardWidth, boardHeight);
     this.piece = this.pickRandomPiece();
+    this.nextPiece = this.pickRandomPiece();
     this.score = 0;
   }
 
@@ -47,7 +48,8 @@ class Tetris {
     } else {
       this.placePiece() // return back previously cleared element
       this.score += this.board.clearFullLines();
-      this.piece = this.pickRandomPiece();
+      this.piece = this.nextPiece;
+      this.nextPiece = this.pickRandomPiece();
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
       }
@@ -60,8 +62,7 @@ class Tetris {
       this.board.clearPiece(this.piece)
       if (this.board.isValidMove(mover.down())) {
         this.piece = mover.down();
-        this.placePiece()
-        console.log('here')
+        this.placePiece();
         mover = new Mover(this.piece);
       } else {
         this.placePiece() // return back previously cleared element

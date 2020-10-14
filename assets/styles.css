@@ -46,7 +46,12 @@ h1, h3, h5 {
   margin: auto;
 }
 
-.grid div {
+.grid.next-piece {
+  width: 80px;
+  height: 80px;
+}
+
+.grid div, .grid.next-piece div {
   background-color: #111111;
   border: 1px solid #333311;
   width: 20px;

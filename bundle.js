@@ -3,22 +3,23 @@ const { Tetris, GameOverError } = require("./src/tetris.js");
 const { Board } = require("./src/board.js");
 
 document.addEventListener('DOMContentLoaded', () => {
-  const width = 10;
-  const scoreDisplay = document.querySelector('#score');
-  const startBtn = document.querySelector('#start-button');
-  const resumeBtn = document.querySelector('#resume-button');
-  const label = document.querySelector('#label');
+  const scoreDisplay = document.getElementById('#score');
+  const startBtn = document.getElementById('start-button');
+  const resumeBtn = document.getElementById('resume-button');
+  const label = document.getElementById('label');
   const labelDrop = document.querySelector('.centerLabel');
+
   document.addEventListener('keydown', listenKeyMove);
   document.addEventListener('keydown', listenKeyPause);
   startBtn.addEventListener('click', startNewGame);
   resumeBtn.addEventListener('click', pauseGame);
 
-  let squares = Array.from(document.querySelectorAll('.grid div'))
-  let tetris = new Tetris(10, 20);
-
+  let squares = Array.from(document.querySelectorAll('.grid.game div'))
+  let nextPieceSquares = Array.from(document.querySelectorAll('#next-piece div'))
+  let tetris;
+  let interval;
   let togglePause = false;
-  let interval = setInterval(nextMoveDown.bind(this), 600);
+  startNewGame();
 
   function listenKeyPause(event) {
     switch (event.keyCode) {
@@ -36,12 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', listenKeyMove);
     document.addEventListener('keydown', listenKeyPause);
     interval = setInterval(nextMoveDown.bind(this), 600);
+    renderNextPiece();
   }
 
   function gameOver() {
     clearInterval(interval);
     labelDrop.classList.remove('hidden')
-    label.innerText = 'Game Over'
+    label.innerText = 'Game Over';
     resumeBtn.classList.add('hidden');
     startBtn.classList.remove('hidden');
     document.removeEventListener('keydown', listenKeyMove);
@@ -59,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       clearInterval(interval);
     } else {
       document.addEventListener('keydown', listenKeyMove);
-      labelDrop.classList.add('hidden')
+      labelDrop.classList.add('hidden');
       resumeBtn.classList.remove('hidden');
       interval = setInterval(nextMoveDown.bind(this), 700);
     }
@@ -110,10 +112,19 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+  function renderNextPiece() {
+    console.log('render')
+    nextPieceSquares.forEach((el) => el.className = '');
+    tetris.nextPiece.coords.forEach(([y, x]) => {
+      nextPieceSquares[y * 4 + x].className = `filled ${tetris.nextPiece.color}`;
+    })
+  }
+
   function nextMoveDown() {
     try {
       tetris.moveDown();
       render();
+      renderNextPiece();
       scoreDisplay.innerText = tetris.score;
     } catch (e) {
       if (e instanceof GameOverError) {
@@ -328,6 +339,7 @@ class Tetris {
   constructor(boardWidth, boardHeight) {
     this.board = new Board(boardWidth, boardHeight);
     this.piece = this.pickRandomPiece();
+    this.nextPiece = this.pickRandomPiece();
     this.score = 0;
   }
 
@@ -368,7 +380,8 @@ class Tetris {
     } else {
       this.placePiece() // return back previously cleared element
       this.score += this.board.clearFullLines();
-      this.piece = this.pickRandomPiece();
+      this.piece = this.nextPiece;
+      this.nextPiece = this.pickRandomPiece();
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
       }
@@ -381,8 +394,7 @@ class Tetris {
       this.board.clearPiece(this.piece)
       if (this.board.isValidMove(mover.down())) {
         this.piece = mover.down();
-        this.placePiece()
-        console.log('here')
+        this.placePiece();
         mover = new Mover(this.piece);
       } else {
         this.placePiece() // return back previously cleared element

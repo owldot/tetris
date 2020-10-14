@@ -2,10 +2,10 @@ const { Tetris, GameOverError } = require("./src/tetris.js");
 const { Board } = require("./src/board.js");
 
 document.addEventListener('DOMContentLoaded', () => {
-  const scoreDisplay = document.querySelector('#score');
-  const startBtn = document.querySelector('#start-button');
-  const resumeBtn = document.querySelector('#resume-button');
-  const label = document.querySelector('#label');
+  const scoreDisplay = document.getElementById('#score');
+  const startBtn = document.getElementById('start-button');
+  const resumeBtn = document.getElementById('resume-button');
+  const label = document.getElementById('label');
   const labelDrop = document.querySelector('.centerLabel');
 
   document.addEventListener('keydown', listenKeyMove);
@@ -13,11 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
   startBtn.addEventListener('click', startNewGame);
   resumeBtn.addEventListener('click', pauseGame);
 
-  let squares = Array.from(document.querySelectorAll('.grid div'))
-  let tetris = new Tetris(10, 20);
-
+  let squares = Array.from(document.querySelectorAll('.grid.game div'))
+  let nextPieceSquares = Array.from(document.querySelectorAll('#next-piece div'))
+  let tetris;
+  let interval;
   let togglePause = false;
-  let interval = setInterval(nextMoveDown.bind(this), 600);
+  startNewGame();
 
   function listenKeyPause(event) {
     switch (event.keyCode) {
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', listenKeyMove);
     document.addEventListener('keydown', listenKeyPause);
     interval = setInterval(nextMoveDown.bind(this), 600);
+    renderNextPiece();
   }
 
   function gameOver() {
@@ -109,10 +111,19 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+  function renderNextPiece() {
+    console.log('render')
+    nextPieceSquares.forEach((el) => el.className = '');
+    tetris.nextPiece.coords.forEach(([y, x]) => {
+      nextPieceSquares[y * 4 + x].className = `filled ${tetris.nextPiece.color}`;
+    })
+  }
+
   function nextMoveDown() {
     try {
       tetris.moveDown();
       render();
+      renderNextPiece();
       scoreDisplay.innerText = tetris.score;
     } catch (e) {
       if (e instanceof GameOverError) {

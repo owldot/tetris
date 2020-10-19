@@ -2,7 +2,7 @@ const { Tetris, GameOverError } = require("./src/tetris.js");
 const { Board } = require("./src/board.js");
 
 document.addEventListener('DOMContentLoaded', () => {
-  const scoreDisplay = document.getElementById('#score');
+  const scoreDisplay = document.getElementById('score');
   const startBtn = document.getElementById('start-button');
   const resumeBtn = document.getElementById('resume-button');
   const label = document.getElementById('label');
@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function startNewGame() {
     tetris = new Tetris(10, 20);
+    tetris.positionInCentre();
     clearInterval(interval);
     togglePause = false;
     labelDrop.classList.add('hidden');
@@ -112,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderNextPiece() {
-    console.log('render')
     nextPieceSquares.forEach((el) => el.className = '');
     tetris.nextPiece.coords.forEach(([y, x]) => {
       nextPieceSquares[y * 4 + x].className = `filled ${tetris.nextPiece.color}`;

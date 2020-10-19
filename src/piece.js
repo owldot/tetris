@@ -1,3 +1,5 @@
+const { TetrisPieces } = require("./tetrisPieces");
+
 const Colors = {
   lRShape: 'red',
   lLShape: 'yellow',
@@ -14,6 +16,7 @@ class Piece {
     this.nameOfShape = nameOfShape;
     this.rotationSequence = rotationSequence;
     this.color = Colors[nameOfShape];
+    this.width = TetrisPieces[nameOfShape].rotations[rotationSequence].width
   }
 
   mostRightX() {
@@ -35,7 +38,7 @@ class Piece {
   shiftXCoordBy(units) {
     const shiftedCoords = this.coords.map((coords) => {
       let [row, col] = coords;
-      return [row, col - units]
+      return [row, col + units]
     })
     this.coords = shiftedCoords;
   }

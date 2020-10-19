@@ -40,7 +40,7 @@ class Mover {
     let maxX = piece.mostRightX();
 
     if (maxX >= maxAllowedX) {
-      piece.shiftXCoordBy(maxX - maxAllowedX);
+      piece.shiftXCoordBy(-(maxX - maxAllowedX)); // Shift away from the right edge
     }
 
     return piece;
@@ -60,7 +60,7 @@ class Mover {
     const [shiftX, shiftY] = this.calculateShift();
     const allRotations = TetrisPieces[this.nameOfShape].rotations;
     const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length;
-    const coords = TetrisPieces[this.nameOfShape].rotations[nextRotation].map(([row, col]) => [row + shiftY, col + shiftX])
+    const coords = TetrisPieces[this.nameOfShape].rotations[nextRotation].shape.map(([row, col]) => [row + shiftY, col + shiftX])
     return new Piece(coords,
       this.nameOfShape,
       nextRotation);

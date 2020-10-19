@@ -19,6 +19,12 @@ class Board {
     return this.area;
   }
 
+  shiftToCenter(piece) {
+    let centerX = Math.ceil((this.width - piece.width) / 2);
+    piece.shiftXCoordBy(centerX);
+    return piece;
+  }
+
   clearPiece(piece) {
     piece.coords.forEach(([y, x]) => this.area[y][x] = 0)
   }

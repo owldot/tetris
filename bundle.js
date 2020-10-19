@@ -3,7 +3,7 @@ const { Tetris, GameOverError } = require("./src/tetris.js");
 const { Board } = require("./src/board.js");
 
 document.addEventListener('DOMContentLoaded', () => {
-  const scoreDisplay = document.getElementById('#score');
+  const scoreDisplay = document.getElementById('score');
   const startBtn = document.getElementById('start-button');
   const resumeBtn = document.getElementById('resume-button');
   const label = document.getElementById('label');
@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function startNewGame() {
     tetris = new Tetris(10, 20);
+    tetris.positionInCentre();
     clearInterval(interval);
     togglePause = false;
     labelDrop.classList.add('hidden');
@@ -113,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderNextPiece() {
-    console.log('render')
     nextPieceSquares.forEach((el) => el.className = '');
     tetris.nextPiece.coords.forEach(([y, x]) => {
       nextPieceSquares[y * 4 + x].className = `filled ${tetris.nextPiece.color}`;
@@ -153,6 +153,12 @@ class Board {
       piece.coords.forEach(([y, x]) => this.area[y][x] = 1)
     }
     return this.area;
+  }
+
+  shiftToCenter(piece) {
+    let centerX = Math.ceil((this.width - piece.width) / 2);
+    piece.shiftXCoordBy(centerX);
+    return piece;
   }
 
   clearPiece(piece) {
@@ -254,7 +260,7 @@ class Mover {
     let maxX = piece.mostRightX();
 
     if (maxX >= maxAllowedX) {
-      piece.shiftXCoordBy(maxX - maxAllowedX);
+      piece.shiftXCoordBy(-(maxX - maxAllowedX)); // Shift away from the right edge
     }
 
     return piece;
@@ -274,7 +280,7 @@ class Mover {
     const [shiftX, shiftY] = this.calculateShift();
     const allRotations = TetrisPieces[this.nameOfShape].rotations;
     const nextRotation = (this.rotationSequence + allRotations.length + 1) % allRotations.length;
-    const coords = TetrisPieces[this.nameOfShape].rotations[nextRotation].map(([row, col]) => [row + shiftY, col + shiftX])
+    const coords = TetrisPieces[this.nameOfShape].rotations[nextRotation].shape.map(([row, col]) => [row + shiftY, col + shiftX])
     return new Piece(coords,
       this.nameOfShape,
       nextRotation);
@@ -284,6 +290,8 @@ class Mover {
 module.exports.Mover = Mover;
 
 },{"./piece":4,"./tetrisPieces":6}],4:[function(require,module,exports){
+const { TetrisPieces } = require("./tetrisPieces");
+
 const Colors = {
   lRShape: 'red',
   lLShape: 'yellow',
@@ -300,6 +308,7 @@ class Piece {
     this.nameOfShape = nameOfShape;
     this.rotationSequence = rotationSequence;
     this.color = Colors[nameOfShape];
+    this.width = TetrisPieces[nameOfShape].rotations[rotationSequence].width
   }
 
   mostRightX() {
@@ -321,7 +330,7 @@ class Piece {
   shiftXCoordBy(units) {
     const shiftedCoords = this.coords.map((coords) => {
       let [row, col] = coords;
-      return [row, col - units]
+      return [row, col + units]
     })
     this.coords = shiftedCoords;
   }
@@ -329,7 +338,7 @@ class Piece {
 
 module.exports.Piece = Piece;
 
-},{}],5:[function(require,module,exports){
+},{"./tetrisPieces":6}],5:[function(require,module,exports){
 const { Board } = require('./board');
 const { Mover } = require('./mover');
 const { Piece } = require('./piece');
@@ -381,6 +390,7 @@ class Tetris {
       this.placePiece() // return back previously cleared element
       this.score += this.board.clearFullLines();
       this.piece = this.nextPiece;
+      this.piece = this.board.shiftToCenter(this.piece);
       this.nextPiece = this.pickRandomPiece();
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
@@ -421,7 +431,11 @@ class Tetris {
     let randomKey = keys[Math.floor(Math.random() * keys.length)];
     let pieceWithAllRotations = TetrisPieces[randomKey].rotations;
     let randomRotation = Math.floor(Math.random() * pieceWithAllRotations.length);
-    return new Piece(pieceWithAllRotations[Math.floor(randomRotation)], randomKey, randomRotation);
+    return new Piece(pieceWithAllRotations[Math.floor(randomRotation)].shape, randomKey, randomRotation);
+  }
+
+  positionInCentre() {
+    this.piece = this.board.shiftToCenter(this.piece);
   }
 }
 
@@ -437,47 +451,109 @@ module.exports.GameOverError = GameOverError;
 
 },{"./board":2,"./mover":3,"./piece":4,"./tetrisPieces":6}],6:[function(require,module,exports){
 const TetrisPieces = {
-  square: { rotations: [[[0, 0], [0, 1], [1, 0], [1, 1]]] },
+  square: {
+    rotations: [
+      {
+        shape: [[0, 0], [0, 1], [1, 0], [1, 1]],
+        width: 2
+      }
+    ]
+  },
   lRShape: {
     rotations: [
-      [[0, 0], [0, 1], [1, 0], [2, 0]],
-      [[1, 0], [1, 1], [1, 2], [2, 2]],
-      [[0, 1], [1, 1], [2, 0], [2, 1]],
-      [[1, 0], [2, 0], [2, 1], [2, 2]]
+      {
+        shape: [[0, 0], [0, 1], [1, 0], [2, 0]],
+        width: 2
+      },
+
+      {
+        shape: [[1, 0], [1, 1], [1, 2], [2, 2]],
+        width: 3
+      },
+      {
+        shape: [[0, 1], [1, 1], [2, 0], [2, 1]],
+        width: 2
+      },
+      {
+        shape: [[1, 0], [2, 0], [2, 1], [2, 2]],
+        width: 3
+      }
     ]
   },
   lLShape: {
     rotations: [
-      [[0, 0], [0, 1], [1, 1], [2, 1]],
-      [[0, 2], [1, 0], [1, 1], [1, 2]],
-      [[0, 0], [1, 0], [2, 0], [2, 1]],
-      [[1, 0], [1, 1], [1, 2], [2, 0]]
+      {
+        shape: [[0, 0], [0, 1], [1, 1], [2, 1]],
+        width: 2
+      },
+      {
+        shape: [[0, 2], [1, 0], [1, 1], [1, 2]],
+        width: 3
+      },
+      {
+        shape: [[0, 0], [1, 0], [2, 0], [2, 1]],
+        width: 2
+      },
+      {
+        shape: [[1, 0], [1, 1], [1, 2], [2, 0]],
+        width: 3
+      }
     ]
   },
   tShape: {
     rotations: [
-      [[0, 0], [1, 0], [1, 1], [2, 0]],
-      [[0, 0], [0, 1], [0, 2], [1, 1]],
-      [[0, 1], [1, 0], [1, 1], [2, 1]],
-      [[1, 1], [2, 0], [2, 1], [2, 2]]
+      {
+        shape: [[0, 0], [1, 0], [1, 1], [2, 0]],
+        width: 2
+      },
+      {
+        shape: [[0, 0], [0, 1], [0, 2], [1, 1]],
+        width: 3
+      },
+      {
+        shape: [[0, 1], [1, 0], [1, 1], [2, 1]],
+        width: 2
+      },
+      {
+        shape: [[1, 1], [2, 0], [2, 1], [2, 2]],
+        width: 3
+      }
     ]
   },
   zLShape: {
     rotations: [
-      [[0, 1], [1, 0], [1, 1], [2, 0]],
-      [[0, 0], [0, 1], [1, 1], [1, 2]]
+      {
+        shape: [[0, 1], [1, 0], [1, 1], [2, 0]],
+        width: 2
+      },
+      {
+        shape: [[0, 0], [0, 1], [1, 1], [1, 2]],
+        width: 3
+      }
     ]
   },
   zRShape: {
     rotations: [
-      [[0, 1], [0, 2], [1, 0], [1, 1]],
-      [[0, 0], [1, 0], [1, 1], [2, 1]]
+      {
+        shape: [[0, 1], [0, 2], [1, 0], [1, 1]],
+        width: 3
+      },
+      {
+        shape: [[0, 0], [1, 0], [1, 1], [2, 1]],
+        width: 2
+      }
     ]
   },
   iShape: {
     rotations: [
-      [[0, 0], [0, 1], [0, 2], [0, 3]],
-      [[0, 1], [1, 1], [2, 1], [3, 1]]
+      {
+        shape: [[0, 0], [0, 1], [0, 2], [0, 3]],
+        width: 4
+      },
+      {
+        shape: [[0, 1], [1, 1], [2, 1], [3, 1]],
+        width: 1
+      }
     ]
   },
 }

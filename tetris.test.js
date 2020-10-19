@@ -104,7 +104,6 @@ describe('Board', () => {
     board.area = [[0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]];
     const expectedArea = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 1, 1]];
     expect(board.clearFullLines()).toBe(2);
-    console.log(board.area)
     expect(board.area).toEqual(expectedArea);
   })
 
@@ -127,6 +126,24 @@ describe('Board', () => {
     expect(board.getYOfFirstFilledLineInXRange(0, 2)).toBe(2);
     expect(board.getYOfFirstFilledLineInXRange(1, 2)).toBe(3);
     expect(board.getYOfFirstFilledLineInXRange(3, 3)).toBe(4);
+  })
+
+  test('shiftToCenter - shift piece to center of the board', () => {
+    let board = new Board(10, 20);
+    let piece = new Piece([[0, 0], [0, 1], [1, 0], [2, 0]], 'lRShape', 0);
+    board.shiftToCenter(piece)
+    expect(piece.coords).toEqual(
+      [[0, 4], [0, 5], [1, 4], [2, 4]]
+    )
+  })
+
+  test('shiftToCenter - shift piece to center of the board - lLShape 2', () => {
+    let board = new Board(10, 20);
+    let piece = new Piece([[0, 0], [1, 0], [2, 0], [2, 1]], 'lLShape', 2);
+    board.shiftToCenter(piece)
+    expect(piece.coords).toEqual(
+      [[0, 4], [1, 4], [2, 4], [2, 5]]
+    )
   })
 })
 

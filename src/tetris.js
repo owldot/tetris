@@ -49,6 +49,7 @@ class Tetris {
       this.placePiece() // return back previously cleared element
       this.score += this.board.clearFullLines();
       this.piece = this.nextPiece;
+      this.piece = this.board.shiftToCenter(this.piece);
       this.nextPiece = this.pickRandomPiece();
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
@@ -89,7 +90,11 @@ class Tetris {
     let randomKey = keys[Math.floor(Math.random() * keys.length)];
     let pieceWithAllRotations = TetrisPieces[randomKey].rotations;
     let randomRotation = Math.floor(Math.random() * pieceWithAllRotations.length);
-    return new Piece(pieceWithAllRotations[Math.floor(randomRotation)], randomKey, randomRotation);
+    return new Piece(pieceWithAllRotations[Math.floor(randomRotation)].shape, randomKey, randomRotation);
+  }
+
+  positionInCentre() {
+    this.piece = this.board.shiftToCenter(this.piece);
   }
 }
 

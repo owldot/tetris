@@ -1,15 +1,27 @@
 body {
   background-color: black;
   text-align: center;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Press Start 2P', cursive, Arial, sans-serif;
 }
 
-h1, h3, h5 {
+h1,
+h3,
+h5 {
   color: white;
+}
+h1 {
+  font-size: 1.5em;
+  color: red;
+}
+
+h3 {
+  font-size: 1em;
 }
 
 .grey {
-  color: #333;
+  color: #555;
+  font-family: monospace;
+  font-size: 1.2em;
 }
 
 .yellow {
@@ -17,17 +29,17 @@ h1, h3, h5 {
 }
 
 .start {
-  box-sizing:border-box;
-  color:rgb(255, 208, 0);
+  box-sizing: border-box;
+  color: rgb(255, 208, 0);
   background-color: green;
   border: 2px solid darkgreen;
-  padding: calc(.5em - 1px) 1.375em;
+  padding: calc(0.5em - 1px) 1.375em;
   justify-content: center;
   text-align: center;
   white-space: nowrap;
   cursor: pointer;
   display: inline-block;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Press Start 2P', Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-weight: 600;
   height: auto;
@@ -51,7 +63,8 @@ h1, h3, h5 {
   height: 80px;
 }
 
-.grid div, .grid.next-piece div {
+.grid div,
+.grid.next-piece div {
   background-color: #111111;
   border: 1px solid #333311;
   width: 20px;
@@ -61,38 +74,66 @@ h1, h3, h5 {
 }
 
 .grid .filled.green {
-  background: rgb(167,213,41);
-  background: radial-gradient(circle, rgb(167, 213, 41) 0%, rgb(91, 158, 29) 100%);
+  background: rgb(167, 213, 41);
+  background: radial-gradient(
+    circle,
+    rgb(167, 213, 41) 0%,
+    rgb(91, 158, 29) 100%
+  );
 }
 
 .grid .filled.red {
-  background: rgb(247,112,0);
-  background: radial-gradient(circle, rgba(247,112,0,1) 0%, rgba(176,22,22,1) 100%);
+  background: rgb(247, 112, 0);
+  background: radial-gradient(
+    circle,
+    rgba(247, 112, 0, 1) 0%,
+    rgba(176, 22, 22, 1) 100%
+  );
 }
 
 .grid .filled.yellow {
-  background: rgb(235,222,168);
-  background: radial-gradient(circle, rgb(253, 253, 0) 0%, rgb(187, 145, 5) 100%);
+  background: rgb(235, 222, 168);
+  background: radial-gradient(
+    circle,
+    rgb(253, 253, 0) 0%,
+    rgb(187, 145, 5) 100%
+  );
 }
 
 .grid .filled.blue {
-  background: rgb(87,141,250);
-  background: radial-gradient(circle, rgba(87,141,250,1) 0%, rgba(93,113,219,1) 100%);
+  background: rgb(87, 141, 250);
+  background: radial-gradient(
+    circle,
+    rgba(87, 141, 250, 1) 0%,
+    rgba(93, 113, 219, 1) 100%
+  );
 }
 
 .grid .filled.white {
-  background: rgb(227,227,227);
-  background: radial-gradient(circle, rgba(227,227,227,1) 0%, rgba(177,177,177,1) 100%);
+  background: rgb(227, 227, 227);
+  background: radial-gradient(
+    circle,
+    rgba(227, 227, 227, 1) 0%,
+    rgba(177, 177, 177, 1) 100%
+  );
 }
 
 .grid .filled.purple {
-  background: rgb(225,155,251);
-  background: radial-gradient(circle, rgba(225,155,251,1) 0%, rgba(164,93,219,1) 100%);
+  background: rgb(225, 155, 251);
+  background: radial-gradient(
+    circle,
+    rgba(225, 155, 251, 1) 0%,
+    rgba(164, 93, 219, 1) 100%
+  );
 }
 
 .grid .filled.cyan {
-  background: rgb(159,232,240);
-  background: radial-gradient(circle, rgba(159,232,240,1) 0%, rgba(7,141,148,1) 100%);
+  background: rgb(159, 232, 240);
+  background: radial-gradient(
+    circle,
+    rgba(159, 232, 240, 1) 0%,
+    rgba(7, 141, 148, 1) 100%
+  );
 }
 
 .centerLabel {
@@ -100,11 +141,11 @@ h1, h3, h5 {
   width: 100%;
   height: 100%;
   color: white;
-  font-size: xx-large;
+  font-size: 2.5em;
   top: 0;
   left: 0;
   display: flex;
-  background:rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   flex-direction: column;
 }
 

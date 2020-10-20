@@ -409,6 +409,99 @@ describe('Tetris', () => {
     expect(tetris.level).toBe(11);
     expect(tetris.speed).toBe(150);
   });
+
+  test('Calculate score and times that we are clearing lines - 0 lines are cleared', () => {
+    const board = new Board(5, 6);
+    board.area = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 1, 1, 1, 1]
+    ];
+    const tetris = new Tetris(5, 6);
+    tetris.board = board;
+
+    expect(tetris.score).toBe(0);
+    expect(tetris.timesLinesWereClearted).toBe(0);
+
+    tetris.calculateScore();
+
+    expect(tetris.score).toBe(0);
+    expect(tetris.timesLinesWereClearted).toBe(0);
+  });
+
+  test('Calculate score and times that we are clearing lines - 1 line is cleared', () => {
+    const board = new Board(5, 6);
+    board.area = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1]
+    ];
+    const tetris = new Tetris(5, 6);
+    tetris.board = board;
+
+    expect(tetris.score).toBe(0);
+    expect(tetris.timesLinesWereClearted).toBe(0);
+
+    tetris.calculateScore();
+
+    expect(tetris.score).toBe(1);
+    expect(tetris.timesLinesWereClearted).toBe(1);
+  });
+
+  test('Calculate score and times that we are clearing lines - 2 line is cleared', () => {
+    const board = new Board(5, 6);
+    board.area = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1]
+    ];
+    const tetris = new Tetris(5, 6);
+    tetris.board = board;
+
+    tetris.calculateScore();
+
+    expect(tetris.score).toBe(3);
+    expect(tetris.timesLinesWereClearted).toBe(1);
+  });
+
+  test('Calculate score and times that we are clearing lines - 3 line is cleared and later 2 lines are cleared', () => {
+    const board = new Board(5, 6);
+    board.area = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1]
+    ];
+    const tetris = new Tetris(5, 6);
+    tetris.board = board;
+
+    tetris.calculateScore();
+
+    board.area = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1]
+    ];
+
+    tetris.calculateScore();
+
+    expect(tetris.score).toBe(8);
+    expect(tetris.timesLinesWereClearted).toBe(2);
+  });
 });
 
 describe('Mover', () => {

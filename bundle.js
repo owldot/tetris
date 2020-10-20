@@ -375,6 +375,7 @@ class Tetris {
     this.piece = this.pickRandomPiece();
     this.prepareNextPiece();
     this.score = 0;
+    this.timesLinesWereClearted = 0;
     this.level = 1;
     this.speed = LevelSpeed[this.level];
   }
@@ -426,7 +427,7 @@ class Tetris {
     } else {
       this.placePiece(); // return back previously cleared element
 
-      this.score += this.board.clearFullLines();
+      this.calculateScore();
       this.setSpeed();
 
       // prepare shape for assigning to current piece
@@ -443,6 +444,27 @@ class Tetris {
       }
 
       this.placePiece();
+    }
+  }
+
+  calculateScore() {
+    const linesCleared = this.board.clearFullLines();
+
+    if (linesCleared > 0) {
+      this.score += this.getScoreMultiplier(linesCleared);
+      this.timesLinesWereClearted += 1;
+    }
+  }
+  getScoreMultiplier(linesCleared) {
+    switch (linesCleared) {
+      case 1:
+        return 1;
+      case 2:
+        return 3;
+      case 3:
+        return 5;
+      case 4:
+        return 10;
     }
   }
 

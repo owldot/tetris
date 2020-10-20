@@ -7,8 +7,18 @@ class Tetris {
   constructor(boardWidth, boardHeight) {
     this.board = new Board(boardWidth, boardHeight);
     this.piece = this.pickRandomPiece();
-    this.nextPiece = this.pickRandomPiece();
+    this.prepareNextPiece();
     this.score = 0;
+  }
+
+  prepareNextPiece() {
+    const windowWidth = 4;
+    this.nextPiece = this.pickRandomPiece();
+    const shift =
+      this.nextPiece.width == 1
+        ? (windowWidth - this.nextPiece.width) / 2 - 2
+        : (windowWidth - this.nextPiece.width) / 2;
+    this.nextPiece.shiftXCoordBy(Math.round(shift));
   }
 
   placePiece() {
@@ -48,9 +58,15 @@ class Tetris {
     } else {
       this.placePiece(); // return back previously cleared element
       this.score += this.board.clearFullLines();
+
+      // prepare shape for assigning to current piece
+      if (this.nextPiece.width <= 2) {
+        this.nextPiece.shiftXCoordBy(-1);
+      }
+
       this.piece = this.nextPiece;
       this.piece = this.board.shiftToCenter(this.piece);
-      this.nextPiece = this.pickRandomPiece();
+      this.prepareNextPiece();
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
       }

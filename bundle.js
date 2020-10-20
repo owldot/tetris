@@ -150,46 +150,47 @@ class Board {
   }
 
   isValidMove(piece) {
-    return piece.coords.every(this.isValidCoordinate)
+    return piece.coords.every(this.isValidCoordinate);
   }
 
   render(piece) {
     if (this.isValidMove(piece)) {
-      piece.coords.forEach(([y, x]) => this.area[y][x] = 1)
+      piece.coords.forEach(([y, x]) => (this.area[y][x] = 1));
     }
     return this.area;
   }
 
   shiftToCenter(piece) {
-    let centerX = Math.ceil((this.width - piece.width) / 2);
+    let centerX = Math.floor((this.width - piece.width) / 2);
     piece.shiftXCoordBy(centerX);
     return piece;
   }
 
   clearPiece(piece) {
-    piece.coords.forEach(([y, x]) => this.area[y][x] = 0)
+    piece.coords.forEach(([y, x]) => (this.area[y][x] = 0));
   }
 
   isValidCoordinate = ([y, x]) => {
     return (
-      x >= 0 && y >= 0
-      && x < this.width && y < this.height
-      && this.area[y][x] == 0
-    )
+      x >= 0 &&
+      y >= 0 &&
+      x < this.width &&
+      y < this.height &&
+      this.area[y][x] == 0
+    );
   };
 
   clearFullLines() {
     const rowIndexes = this.detectFullRows();
     rowIndexes.forEach((index) => {
       this.clearRow(index);
-    })
+    });
 
     if (rowIndexes.length > 0) {
       rowIndexes.forEach((index) => {
         this.area.splice(index, 1);
         this.area.splice(0, 0, new Array(this.width).fill(0));
-      })
-
+      });
     }
 
     return rowIndexes.length;
@@ -199,10 +200,10 @@ class Board {
     for (let y = 0; y < this.height; y++) {
       for (let x = fromX; x <= toX; x++)
         if (this.area[y][x] == 1) {
-          return y
+          return y;
         }
     }
-    return this.height - 1
+    return this.height - 1;
   }
 
   clearRow(index) {
@@ -215,8 +216,8 @@ class Board {
       if (row.every((cell) => cell == 1)) {
         rows.push(index);
       }
-    })
-    return rows
+    });
+    return rows;
   }
 }
 
@@ -353,8 +354,18 @@ class Tetris {
   constructor(boardWidth, boardHeight) {
     this.board = new Board(boardWidth, boardHeight);
     this.piece = this.pickRandomPiece();
-    this.nextPiece = this.pickRandomPiece();
+    this.prepareNextPiece();
     this.score = 0;
+  }
+
+  prepareNextPiece() {
+    const windowWidth = 4;
+    this.nextPiece = this.pickRandomPiece();
+    const shift =
+      this.nextPiece.width == 1
+        ? (windowWidth - this.nextPiece.width) / 2 - 2
+        : (windowWidth - this.nextPiece.width) / 2;
+    this.nextPiece.shiftXCoordBy(Math.round(shift));
   }
 
   placePiece() {
@@ -394,9 +405,14 @@ class Tetris {
     } else {
       this.placePiece(); // return back previously cleared element
       this.score += this.board.clearFullLines();
+
+      if (this.nextPiece.width <= 2) {
+        this.nextPiece.shiftXCoordBy(-1);
+      }
+
       this.piece = this.nextPiece;
       this.piece = this.board.shiftToCenter(this.piece);
-      this.nextPiece = this.pickRandomPiece();
+      this.prepareNextPiece();
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
       }

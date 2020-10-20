@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   );
   let tetris;
   let interval;
+  let intervalMs;
   let togglePause = false;
   startNewGame();
 
@@ -39,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
     labelDrop.classList.add('hidden');
     document.addEventListener('keydown', listenKeyMove);
     document.addEventListener('keydown', listenKeyPause);
-    interval = setInterval(nextMoveDown.bind(this), 600);
+    intervalMs = tetris.speed;
+    interval = setInterval(nextMoveDown.bind(this), intervalMs);
     renderNextPiece();
   }
 
@@ -66,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.addEventListener('keydown', listenKeyMove);
       labelDrop.classList.add('hidden');
       resumeBtn.classList.remove('hidden');
-      interval = setInterval(nextMoveDown.bind(this), 700);
+      interval = setInterval(nextMoveDown.bind(this), tetris.speed);
     }
   }
 
@@ -129,6 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
       render();
       renderNextPiece();
       scoreDisplay.innerText = tetris.score;
+      if (intervalMs != tetris.speed) {
+        clearInterval(interval);
+        intervalMs = tetris.speed;
+        interval = setInterval(nextMoveDown.bind(this), intervalMs);
+      }
     } catch (e) {
       if (e instanceof GameOverError) {
         gameOver();

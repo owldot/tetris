@@ -2,6 +2,18 @@ const { Board } = require('./board');
 const { Mover } = require('./mover');
 const { Piece } = require('./piece');
 const { TetrisPieces } = require('./tetrisPieces');
+const LevelSpeed = {
+  1: 600,
+  2: 550,
+  3: 500,
+  4: 450,
+  5: 400,
+  6: 350,
+  7: 300,
+  8: 250,
+  9: 200,
+  10: 150
+};
 
 class Tetris {
   constructor(boardWidth, boardHeight) {
@@ -9,6 +21,8 @@ class Tetris {
     this.piece = this.pickRandomPiece();
     this.prepareNextPiece();
     this.score = 0;
+    this.level = 1;
+    this.speed = LevelSpeed[this.level];
   }
 
   prepareNextPiece() {
@@ -57,7 +71,9 @@ class Tetris {
       this.placePiece();
     } else {
       this.placePiece(); // return back previously cleared element
+
       this.score += this.board.clearFullLines();
+      this.setSpeed();
 
       // prepare shape for assigning to current piece
       if (this.nextPiece.width <= 2) {
@@ -67,11 +83,22 @@ class Tetris {
       this.piece = this.nextPiece;
       this.piece = this.board.shiftToCenter(this.piece);
       this.prepareNextPiece();
+
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
       }
+
       this.placePiece();
     }
+  }
+
+  setSpeed() {
+    this.level = this.score == 0 ? 1 : Math.ceil(this.score / 10);
+
+    this.speed =
+      this.level < 11
+        ? LevelSpeed[this.level]
+        : LevelSpeed[Object.keys(LevelSpeed).length];
   }
 
   drop() {

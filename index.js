@@ -1,5 +1,5 @@
-const { Tetris, GameOverError } = require("./src/tetris.js");
-const { Board } = require("./src/board.js");
+const { Tetris, GameOverError } = require('./src/tetris.js');
+const { Board } = require('./src/board.js');
 
 document.addEventListener('DOMContentLoaded', () => {
   const scoreDisplay = document.getElementById('score');
@@ -13,8 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
   startBtn.addEventListener('click', startNewGame);
   resumeBtn.addEventListener('click', pauseGame);
 
-  let squares = Array.from(document.querySelectorAll('.grid.game div'))
-  let nextPieceSquares = Array.from(document.querySelectorAll('#next-piece div'))
+  let squares = Array.from(document.querySelectorAll('.grid.game div'));
+  let nextPieceSquares = Array.from(
+    document.querySelectorAll('#next-piece div')
+  );
   let tetris;
   let interval;
   let togglePause = false;
@@ -31,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function startNewGame() {
     tetris = new Tetris(10, 20);
     tetris.positionInCentre();
+    render();
     clearInterval(interval);
     togglePause = false;
     labelDrop.classList.add('hidden');
@@ -42,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function gameOver() {
     clearInterval(interval);
-    labelDrop.classList.remove('hidden')
+    labelDrop.classList.remove('hidden');
     label.innerText = 'Game Over';
     resumeBtn.classList.add('hidden');
     startBtn.classList.remove('hidden');
@@ -76,22 +79,21 @@ document.addEventListener('DOMContentLoaded', () => {
         tetris.rotate();
         break;
       case 39:
-        tetris.moveRight()
+        tetris.moveRight();
         break;
       case 40:
         try {
           tetris.moveDown();
-        }
-        catch (e) {
+        } catch (e) {
           if (e instanceof GameOverError) {
             gameOver();
           }
         }
         break;
       case 32:
-        tetris.drop()
+        tetris.drop();
     }
-    render()
+    render();
   }
 
   function render() {
@@ -102,21 +104,23 @@ document.addEventListener('DOMContentLoaded', () => {
       if (matrixElement === 1) {
         const cssClassName = tetris.piece.color;
         square.classList.add('filled');
-        if (square.classList.length == 1) { // Testing if color was already assigned
+        // Testing if color was already assigned
+        if (square.classList.length == 1) {
           square.classList.add(cssClassName);
         }
-      }
-      else {
+      } else {
         square.className = ''; // Clear all colors
       }
-    })
+    });
   }
 
   function renderNextPiece() {
-    nextPieceSquares.forEach((el) => el.className = '');
+    nextPieceSquares.forEach((el) => (el.className = ''));
     tetris.nextPiece.coords.forEach(([y, x]) => {
-      nextPieceSquares[y * 4 + x].className = `filled ${tetris.nextPiece.color}`;
-    })
+      nextPieceSquares[
+        y * 4 + x
+      ].className = `filled ${tetris.nextPiece.color}`;
+    });
   }
 
   function nextMoveDown() {
@@ -131,4 +135,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
-})
+});

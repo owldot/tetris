@@ -18,35 +18,35 @@ class Tetris {
   moveRight() {
     const mover = new Mover(this.piece);
 
-    this.board.clearPiece(this.piece)
+    this.board.clearPiece(this.piece);
     if (this.board.isValidMove(mover.right())) {
       this.piece = mover.right();
-      return this.placePiece()
+      return this.placePiece();
     } else {
-      return this.placePiece()
+      return this.placePiece();
     }
   }
 
   moveLeft() {
     const mover = new Mover(this.piece);
 
-    this.board.clearPiece(this.piece)
+    this.board.clearPiece(this.piece);
     if (this.board.isValidMove(mover.left())) {
       this.piece = mover.left();
-      this.placePiece()
+      this.placePiece();
     } else {
-      this.placePiece()
+      this.placePiece();
     }
   }
 
   moveDown() {
     const mover = new Mover(this.piece);
-    this.board.clearPiece(this.piece)
+    this.board.clearPiece(this.piece);
     if (this.board.isValidMove(mover.down())) {
       this.piece = mover.down();
-      this.placePiece()
+      this.placePiece();
     } else {
-      this.placePiece() // return back previously cleared element
+      this.placePiece(); // return back previously cleared element
       this.score += this.board.clearFullLines();
       this.piece = this.nextPiece;
       this.piece = this.board.shiftToCenter(this.piece);
@@ -54,19 +54,20 @@ class Tetris {
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
       }
+      this.placePiece();
     }
   }
 
   drop() {
     let mover = new Mover(this.piece);
     while (true) {
-      this.board.clearPiece(this.piece)
+      this.board.clearPiece(this.piece);
       if (this.board.isValidMove(mover.down())) {
         this.piece = mover.down();
         this.placePiece();
         mover = new Mover(this.piece);
       } else {
-        this.placePiece() // return back previously cleared element
+        this.placePiece(); // return back previously cleared element
         break;
       }
     }
@@ -79,9 +80,9 @@ class Tetris {
     const limitX = this.board.width - 1;
     if (this.board.isValidMove(mover.rotateClockwiseWithShift(limitX))) {
       this.piece = mover.rotateClockwiseWithShift(limitX);
-      this.placePiece()
+      this.placePiece();
     } else {
-      this.placePiece()
+      this.placePiece();
     }
   }
 
@@ -89,12 +90,20 @@ class Tetris {
     const keys = Object.keys(TetrisPieces);
     let randomKey = keys[Math.floor(Math.random() * keys.length)];
     let pieceWithAllRotations = TetrisPieces[randomKey].rotations;
-    let randomRotation = Math.floor(Math.random() * pieceWithAllRotations.length);
-    return new Piece(pieceWithAllRotations[Math.floor(randomRotation)].shape, randomKey, randomRotation);
+    let randomRotation = Math.floor(
+      Math.random() * pieceWithAllRotations.length
+    );
+    return new Piece(
+      pieceWithAllRotations[Math.floor(randomRotation)].shape,
+      randomKey,
+      randomRotation
+    );
   }
 
   positionInCentre() {
+    this.board.clearPiece(this.piece);
     this.piece = this.board.shiftToCenter(this.piece);
+    this.placePiece();
   }
 }
 

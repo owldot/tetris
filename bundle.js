@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const { Tetris, GameOverError } = require("./src/tetris.js");
-const { Board } = require("./src/board.js");
+const { Tetris, GameOverError } = require('./src/tetris.js');
+const { Board } = require('./src/board.js');
 
 document.addEventListener('DOMContentLoaded', () => {
   const scoreDisplay = document.getElementById('score');
@@ -14,8 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
   startBtn.addEventListener('click', startNewGame);
   resumeBtn.addEventListener('click', pauseGame);
 
-  let squares = Array.from(document.querySelectorAll('.grid.game div'))
-  let nextPieceSquares = Array.from(document.querySelectorAll('#next-piece div'))
+  let squares = Array.from(document.querySelectorAll('.grid.game div'));
+  let nextPieceSquares = Array.from(
+    document.querySelectorAll('#next-piece div')
+  );
   let tetris;
   let interval;
   let togglePause = false;
@@ -32,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function startNewGame() {
     tetris = new Tetris(10, 20);
     tetris.positionInCentre();
+    render();
     clearInterval(interval);
     togglePause = false;
     labelDrop.classList.add('hidden');
@@ -43,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function gameOver() {
     clearInterval(interval);
-    labelDrop.classList.remove('hidden')
+    labelDrop.classList.remove('hidden');
     label.innerText = 'Game Over';
     resumeBtn.classList.add('hidden');
     startBtn.classList.remove('hidden');
@@ -77,22 +80,21 @@ document.addEventListener('DOMContentLoaded', () => {
         tetris.rotate();
         break;
       case 39:
-        tetris.moveRight()
+        tetris.moveRight();
         break;
       case 40:
         try {
           tetris.moveDown();
-        }
-        catch (e) {
+        } catch (e) {
           if (e instanceof GameOverError) {
             gameOver();
           }
         }
         break;
       case 32:
-        tetris.drop()
+        tetris.drop();
     }
-    render()
+    render();
   }
 
   function render() {
@@ -103,21 +105,23 @@ document.addEventListener('DOMContentLoaded', () => {
       if (matrixElement === 1) {
         const cssClassName = tetris.piece.color;
         square.classList.add('filled');
-        if (square.classList.length == 1) { // Testing if color was already assigned
+        // Testing if color was already assigned
+        if (square.classList.length == 1) {
           square.classList.add(cssClassName);
         }
-      }
-      else {
+      } else {
         square.className = ''; // Clear all colors
       }
-    })
+    });
   }
 
   function renderNextPiece() {
-    nextPieceSquares.forEach((el) => el.className = '');
+    nextPieceSquares.forEach((el) => (el.className = ''));
     tetris.nextPiece.coords.forEach(([y, x]) => {
-      nextPieceSquares[y * 4 + x].className = `filled ${tetris.nextPiece.color}`;
-    })
+      nextPieceSquares[
+        y * 4 + x
+      ].className = `filled ${tetris.nextPiece.color}`;
+    });
   }
 
   function nextMoveDown() {
@@ -132,7 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
-})
+});
+
 },{"./src/board.js":2,"./src/tetris.js":5}],2:[function(require,module,exports){
 class Board {
   constructor(width = 10, height = 20) {
@@ -359,35 +364,35 @@ class Tetris {
   moveRight() {
     const mover = new Mover(this.piece);
 
-    this.board.clearPiece(this.piece)
+    this.board.clearPiece(this.piece);
     if (this.board.isValidMove(mover.right())) {
       this.piece = mover.right();
-      return this.placePiece()
+      return this.placePiece();
     } else {
-      return this.placePiece()
+      return this.placePiece();
     }
   }
 
   moveLeft() {
     const mover = new Mover(this.piece);
 
-    this.board.clearPiece(this.piece)
+    this.board.clearPiece(this.piece);
     if (this.board.isValidMove(mover.left())) {
       this.piece = mover.left();
-      this.placePiece()
+      this.placePiece();
     } else {
-      this.placePiece()
+      this.placePiece();
     }
   }
 
   moveDown() {
     const mover = new Mover(this.piece);
-    this.board.clearPiece(this.piece)
+    this.board.clearPiece(this.piece);
     if (this.board.isValidMove(mover.down())) {
       this.piece = mover.down();
-      this.placePiece()
+      this.placePiece();
     } else {
-      this.placePiece() // return back previously cleared element
+      this.placePiece(); // return back previously cleared element
       this.score += this.board.clearFullLines();
       this.piece = this.nextPiece;
       this.piece = this.board.shiftToCenter(this.piece);
@@ -395,19 +400,20 @@ class Tetris {
       if (!this.board.isValidMove(this.piece)) {
         throw new GameOverError('Game Over');
       }
+      this.placePiece();
     }
   }
 
   drop() {
     let mover = new Mover(this.piece);
     while (true) {
-      this.board.clearPiece(this.piece)
+      this.board.clearPiece(this.piece);
       if (this.board.isValidMove(mover.down())) {
         this.piece = mover.down();
         this.placePiece();
         mover = new Mover(this.piece);
       } else {
-        this.placePiece() // return back previously cleared element
+        this.placePiece(); // return back previously cleared element
         break;
       }
     }
@@ -420,9 +426,9 @@ class Tetris {
     const limitX = this.board.width - 1;
     if (this.board.isValidMove(mover.rotateClockwiseWithShift(limitX))) {
       this.piece = mover.rotateClockwiseWithShift(limitX);
-      this.placePiece()
+      this.placePiece();
     } else {
-      this.placePiece()
+      this.placePiece();
     }
   }
 
@@ -430,12 +436,20 @@ class Tetris {
     const keys = Object.keys(TetrisPieces);
     let randomKey = keys[Math.floor(Math.random() * keys.length)];
     let pieceWithAllRotations = TetrisPieces[randomKey].rotations;
-    let randomRotation = Math.floor(Math.random() * pieceWithAllRotations.length);
-    return new Piece(pieceWithAllRotations[Math.floor(randomRotation)].shape, randomKey, randomRotation);
+    let randomRotation = Math.floor(
+      Math.random() * pieceWithAllRotations.length
+    );
+    return new Piece(
+      pieceWithAllRotations[Math.floor(randomRotation)].shape,
+      randomKey,
+      randomRotation
+    );
   }
 
   positionInCentre() {
+    this.board.clearPiece(this.piece);
     this.piece = this.board.shiftToCenter(this.piece);
+    this.placePiece();
   }
 }
 

@@ -1,5 +1,6 @@
 const { Tetris, GameOverError } = require('./src/tetris.js');
 const { Board } = require('./src/board.js');
+const { HighScore } = require('./src/highScore.js');
 
 document.addEventListener('DOMContentLoaded', () => {
   const scoreDisplay = document.getElementById('score');
@@ -8,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const resumeBtn = document.getElementById('resume-button');
   const label = document.getElementById('label');
   const labelDrop = document.querySelector('.centerLabel');
+  const highScoreTable = document.getElementById('high-score');
 
   document.addEventListener('keydown', listenKeyMove);
   document.addEventListener('keydown', listenKeyPause);
@@ -19,6 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#next-piece div')
   );
   let tetris;
+
+  if (!localStorage.getItem('records')) {
+    localStorage.setItem('records', JSON.stringify([]));
+  }
+
+  const highScore = new HighScore(JSON.parse(localStorage.getItem('records')));
+
   let interval;
   let intervalMs;
   let togglePause = false;
@@ -48,12 +57,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function gameOver() {
     clearInterval(interval);
+    highScore.add(tetris.score);
     labelDrop.classList.remove('hidden');
     label.innerText = 'Game Over';
     resumeBtn.classList.add('hidden');
     startBtn.classList.remove('hidden');
     document.removeEventListener('keydown', listenKeyMove);
     document.removeEventListener('keydown', listenKeyPause);
+    saveHighScoreToLocalStorage();
+    displayHighScore();
+  }
+
+  function saveHighScoreToLocalStorage() {
+    let storage = [];
+    highScore.records.forEach((record) => {
+      storage.push([record.description, record.score]);
+    });
+    localStorage.setItem('records', JSON.stringify(storage));
+  }
+
+  function displayHighScore() {
+    let html = '';
+    highScore.records.forEach((record) => {
+      html += `<li><div class='desc'>${record.description}</div><div class='record'>${record.score}</li>`;
+    });
+    highScoreTable.innerHTML = html;
   }
 
   function pauseGame() {
@@ -64,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       startBtn.classList.add('hidden');
       resumeBtn.classList.remove('hidden');
       document.removeEventListener('keydown', listenKeyMove);
+      displayHighScore();
       clearInterval(interval);
     } else {
       document.addEventListener('keydown', listenKeyMove);

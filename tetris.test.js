@@ -2,7 +2,61 @@ const { Tetris } = require('./src/tetris');
 const { Board } = require('./src/board');
 const { Mover } = require('./src/mover');
 const { Piece } = require('./src/piece');
+const { HighScore } = require('./src/highScore');
 const { TetrisPieces } = require('./src/tetrisPieces');
+
+describe('HighScore', () => {
+  test('Initializes empty if no array is given', () => {
+    const highScore = new HighScore([]);
+    expect(highScore.records.length).toEqual(0);
+  });
+
+  test('Initializes with data ', () => {
+    const highScore = new HighScore([
+      ['d', 1],
+      ['a', 4]
+    ]);
+    expect(highScore.records.length).toEqual(2);
+  });
+
+  test('Sorts', () => {
+    const highScore = new HighScore([
+      ['d', 1],
+      ['a', 4],
+      ['b', 3],
+      ['b', 9]
+    ]);
+
+    highScore.sort();
+
+    expect(highScore.records[0].score).toEqual(9);
+    expect(highScore.records[1].score).toEqual(4);
+    expect(highScore.records[2].score).toEqual(3);
+    expect(highScore.records[3].score).toEqual(1);
+  });
+
+  test('Add to empty', () => {
+    const highScore = new HighScore([]);
+    highScore.add(12);
+    expect(highScore.records.length).toBe(1);
+    expect(highScore.records[0].score).toBe(12);
+  });
+
+  test('Add to table of max size(5) - add sixth record', () => {
+    const highScore = new HighScore([
+      ['d', 1],
+      ['a', 4],
+      ['b', 3],
+      ['b', 9],
+      ['b', 9]
+    ]);
+
+    highScore.add(12);
+    expect(highScore.records.length).toBe(5);
+    expect(highScore.records[0].score).toBe(12);
+    expect(highScore.records[4].score).toBe(3);
+  });
+});
 
 describe('Board', () => {
   test('Board is created', () => {

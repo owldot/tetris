@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <script type="module" src="./bundle.js"></script>
-  <link rel="stylesheet" href="assets/styles.css?v=1">
+  <link rel="stylesheet" href="assets/styles.css?v=3">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   </link>
   <title>Tetris</title>
@@ -12,7 +12,7 @@
 
 <body>
   <h1>
-    Andrew and Lana's Tetris
+    Trivial Tetris
   </h1>
   <h3>Score: <span id="score">0</span></h3>
   <h3>Level: <span id="level">1</span></h3>
@@ -37,11 +37,21 @@
   </div>
 
   <h5 class="yellow">Press escape button to pause the game.</h5>
+  <p class="grey">This game is dedicated to my son. Andrew, you are the best. Love, mom.</p>
   <p class="grey">Svitlana Dzyuban &copy; 2020</p>
   <div class="centerLabel hidden">
     <div>
-      <div id="label">Paused</div>
-      <button class='start hidden' id='start-button'>Restart!</button>
+      <div class='high-score'>
+        <div class="title"><h3>* My High Score *</h3></div>
+        <ul id="high-score">
+          <li><div class='desc'>2020-10-17</div><div class='record'>360</li>
+          <li><div class='desc'>2020-10-18</div><div class='record'>279</div></li>
+          <li><div class='desc'>2020-10-18</div><div class='record'>278</div></li>
+          <li><div class='desc'>2020-10-15</div><div class='record'>54</div></li>
+        </ul>
+      </div>
+      <h1 id="label">Paused</h1>
+      <button class='start hidden' id='start-button'>Restart</button>
       <button class='start hidden' id='resume-button'>Resume</button>
     </div>
   </div>

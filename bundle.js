@@ -1,6 +1,7 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const { Tetris, GameOverError } = require('./src/tetris.js');
 const { Board } = require('./src/board.js');
+const { HighScore } = require('./src/highScore.js');
 
 document.addEventListener('DOMContentLoaded', () => {
   const scoreDisplay = document.getElementById('score');
@@ -9,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const resumeBtn = document.getElementById('resume-button');
   const label = document.getElementById('label');
   const labelDrop = document.querySelector('.centerLabel');
+  const highScoreTable = document.getElementById('high-score');
 
   document.addEventListener('keydown', listenKeyMove);
   document.addEventListener('keydown', listenKeyPause);
@@ -20,6 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#next-piece div')
   );
   let tetris;
+
+  if (!localStorage.getItem('records')) {
+    localStorage.setItem('records', JSON.stringify([]));
+  }
+
+  const highScore = new HighScore(JSON.parse(localStorage.getItem('records')));
+
   let interval;
   let intervalMs;
   let togglePause = false;
@@ -49,12 +58,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function gameOver() {
     clearInterval(interval);
+    highScore.add(tetris.score);
     labelDrop.classList.remove('hidden');
     label.innerText = 'Game Over';
     resumeBtn.classList.add('hidden');
     startBtn.classList.remove('hidden');
     document.removeEventListener('keydown', listenKeyMove);
     document.removeEventListener('keydown', listenKeyPause);
+    saveHighScoreToLocalStorage();
+    displayHighScore();
+  }
+
+  function saveHighScoreToLocalStorage() {
+    let storage = [];
+    highScore.records.forEach((record) => {
+      storage.push([record.description, record.score]);
+    });
+    localStorage.setItem('records', JSON.stringify(storage));
+  }
+
+  function displayHighScore() {
+    let html = '';
+    highScore.records.forEach((record) => {
+      html += `<li><div class='desc'>${record.description}</div><div class='record'>${record.score}</li>`;
+    });
+    highScoreTable.innerHTML = html;
   }
 
   function pauseGame() {
@@ -65,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       startBtn.classList.add('hidden');
       resumeBtn.classList.remove('hidden');
       document.removeEventListener('keydown', listenKeyMove);
+      displayHighScore();
       clearInterval(interval);
     } else {
       document.addEventListener('keydown', listenKeyMove);
@@ -147,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-},{"./src/board.js":2,"./src/tetris.js":5}],2:[function(require,module,exports){
+},{"./src/board.js":2,"./src/highScore.js":3,"./src/tetris.js":6}],2:[function(require,module,exports){
 class Board {
   constructor(width = 10, height = 20) {
     this.width = width;
@@ -233,6 +262,49 @@ class Board {
 module.exports.Board = Board;
 
 },{}],3:[function(require,module,exports){
+class HighScore {
+  records;
+  constructor(records) {
+    this.records = records.map(([desc, score]) => new Record(desc, score));
+    this.sort();
+  }
+
+  sort() {
+    this.records = this.records.sort((rec2, rec1) => {
+      if (rec1.score < rec2.score) {
+        return -1;
+      }
+      if (rec1.score > rec2.score) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  add(score = 0) {
+    const date = new Date().toLocaleDateString();
+    this.records.push(new Record(date, score));
+    this.sort();
+    if (this.records.length > 5) {
+      this.records.pop();
+    }
+  }
+}
+
+class Record {
+  constructor(description, score) {
+    this.description = description;
+    this.score = score;
+  }
+
+  isBiggerThan(record) {
+    return this.score > record.score;
+  }
+}
+
+module.exports.HighScore = HighScore;
+
+},{}],4:[function(require,module,exports){
 const { Piece } = require('./piece');
 const { TetrisPieces } = require('./tetrisPieces');
 
@@ -304,7 +376,7 @@ class Mover {
 
 module.exports.Mover = Mover;
 
-},{"./piece":4,"./tetrisPieces":6}],4:[function(require,module,exports){
+},{"./piece":5,"./tetrisPieces":7}],5:[function(require,module,exports){
 const { TetrisPieces } = require("./tetrisPieces");
 
 const Colors = {
@@ -353,7 +425,7 @@ class Piece {
 
 module.exports.Piece = Piece;
 
-},{"./tetrisPieces":6}],5:[function(require,module,exports){
+},{"./tetrisPieces":7}],6:[function(require,module,exports){
 const { Board } = require('./board');
 const { Mover } = require('./mover');
 const { Piece } = require('./piece');
@@ -552,7 +624,7 @@ class GameOverError extends Error {
 module.exports.Tetris = Tetris;
 module.exports.GameOverError = GameOverError;
 
-},{"./board":2,"./mover":3,"./piece":4,"./tetrisPieces":6}],6:[function(require,module,exports){
+},{"./board":2,"./mover":4,"./piece":5,"./tetrisPieces":7}],7:[function(require,module,exports){
 const TetrisPieces = {
   square: {
     rotations: [

@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         break;
       case 32:
-        tetris.drop();
+        drop();
     }
     render();
   }
@@ -159,6 +159,18 @@ document.addEventListener('DOMContentLoaded', () => {
         y * 4 + x
       ].className = `filled ${tetris.nextPiece.color}`;
     });
+  }
+  function drop() {
+    try {
+      tetris.drop();
+      render();
+      tetris.settleAndPrepareNext();
+      renderNextPiece();
+    } catch (e) {
+      if (e instanceof GameOverError) {
+        gameOver();
+      }
+    }
   }
 
   function nextMoveDown() {
@@ -509,21 +521,25 @@ class Tetris {
       this.calculateScore();
       this.setSpeed();
 
-      // prepare shape for assigning to current piece
-      if (this.nextPiece.width <= 2) {
-        this.nextPiece.shiftXCoordBy(-1);
-      }
-
-      this.piece = this.nextPiece;
-      this.piece = this.board.shiftToCenter(this.piece);
-      this.prepareNextPiece();
-
-      if (!this.board.isValidMove(this.piece)) {
-        throw new GameOverError('Game Over');
-      }
-
-      this.placePiece();
+      this.settleAndPrepareNext();
     }
+  }
+
+  settleAndPrepareNext() {
+    // prepare shape for assigning to current piece
+    if (this.nextPiece.width <= 2) {
+      this.nextPiece.shiftXCoordBy(-1);
+    }
+
+    this.piece = this.nextPiece;
+    this.piece = this.board.shiftToCenter(this.piece);
+    this.prepareNextPiece();
+
+    if (!this.board.isValidMove(this.piece)) {
+      throw new GameOverError('Game Over');
+    }
+
+    this.placePiece();
   }
 
   calculateScore() {
@@ -580,6 +596,8 @@ class Tetris {
         mover = new Mover(this.piece);
       } else {
         this.placePiece(); // return back previously cleared element
+        this.calculateScore();
+        this.setSpeed();
         break;
       }
     }

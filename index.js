@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         break;
       case 32:
-        tetris.drop();
+        drop();
     }
     render();
   }
@@ -158,6 +158,18 @@ document.addEventListener('DOMContentLoaded', () => {
         y * 4 + x
       ].className = `filled ${tetris.nextPiece.color}`;
     });
+  }
+  function drop() {
+    try {
+      tetris.drop();
+      render();
+      tetris.settleAndPrepareNext();
+      renderNextPiece();
+    } catch (e) {
+      if (e instanceof GameOverError) {
+        gameOver();
+      }
+    }
   }
 
   function nextMoveDown() {

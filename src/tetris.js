@@ -112,7 +112,7 @@ class Tetris {
     } else if (this.level >= 5 && this.level < 10) {
       return 2;
     } else if (this.level >= 10) {
-      return 3;
+      return 3 + (this.level - 10);
     }
   }
 

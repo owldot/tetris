@@ -598,6 +598,19 @@ describe('Tetris', () => {
     tetris.calculateScore();
 
     expect(tetris.score).toBe(30);
+
+    board.area = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1]
+    ];
+    tetris.level = 12;
+    tetris.calculateScore();
+
+    expect(tetris.score).toBe(55);
   });
 });
 

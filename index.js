@@ -52,7 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', listenKeyPause);
     intervalMs = tetris.speed;
     interval = setInterval(nextMoveDown.bind(this), intervalMs);
+    stripCSS();
     renderNextPiece();
+  }
+
+  function stripCSS() {
+    squares.forEach((square) => (square.classList = ''));
   }
 
   function gameOver() {

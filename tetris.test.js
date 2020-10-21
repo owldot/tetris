@@ -386,25 +386,25 @@ describe('Tetris', () => {
     expect(tetris.board.area).toEqual(expectedArea);
   });
 
-  test('Speed and level change with score', () => {
+  test('Speed and level change with amount lines were destroyed', () => {
     let tetris = new Tetris(5, 6);
 
-    tetris.score = 0;
+    tetris.timesLinesWereClearted = 0;
     tetris.setSpeed();
     expect(tetris.level).toBe(1);
     expect(tetris.speed).toBe(600);
 
-    tetris.score = 9;
+    tetris.timesLinesWereClearted = 9;
     tetris.setSpeed();
     expect(tetris.level).toBe(1);
     expect(tetris.speed).toBe(600);
 
-    tetris.score = 11;
+    tetris.timesLinesWereClearted = 11;
     tetris.setSpeed();
     expect(tetris.level).toBe(2);
     expect(tetris.speed).toBe(550);
 
-    tetris.score = 101;
+    tetris.timesLinesWereClearted = 101;
     tetris.setSpeed();
     expect(tetris.level).toBe(11);
     expect(tetris.speed).toBe(150);
@@ -501,6 +501,49 @@ describe('Tetris', () => {
 
     expect(tetris.score).toBe(8);
     expect(tetris.timesLinesWereClearted).toBe(2);
+  });
+
+  test('Calculate score respecting levels - 3 line is cleared and level is changing', () => {
+    const board = new Board(5, 6);
+    board.area = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1]
+    ];
+    const tetris = new Tetris(5, 6);
+    tetris.board = board;
+
+    tetris.calculateScore();
+    expect(tetris.score).toBe(5);
+
+    board.area = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1]
+    ];
+    tetris.level = 5;
+    tetris.calculateScore();
+
+    expect(tetris.score).toBe(15);
+
+    board.area = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1]
+    ];
+    tetris.level = 10;
+    tetris.calculateScore();
+
+    expect(tetris.score).toBe(30);
   });
 });
 

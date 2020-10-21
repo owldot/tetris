@@ -453,10 +453,21 @@ class Tetris {
     const linesCleared = this.board.clearFullLines();
 
     if (linesCleared > 0) {
-      this.score += this.getScoreMultiplier(linesCleared);
+      this.score +=
+        this.getScoreMultiplier(linesCleared) * this.getSpeedMultiplier();
       this.timesLinesWereClearted += 1;
     }
   }
+  getSpeedMultiplier() {
+    if (this.level < 5) {
+      return 1;
+    } else if (this.level >= 5 && this.level < 10) {
+      return 2;
+    } else if (this.level >= 10) {
+      return 3;
+    }
+  }
+
   getScoreMultiplier(linesCleared) {
     switch (linesCleared) {
       case 1:

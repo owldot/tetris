@@ -4,6 +4,7 @@ const { Board } = require('./src/board.js');
 
 document.addEventListener('DOMContentLoaded', () => {
   const scoreDisplay = document.getElementById('score');
+  const levelDisplay = document.getElementById('level');
   const startBtn = document.getElementById('start-button');
   const resumeBtn = document.getElementById('resume-button');
   const label = document.getElementById('label');
@@ -132,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
       render();
       renderNextPiece();
       scoreDisplay.innerText = tetris.score;
+      levelDisplay.innerText = tetris.level;
       if (intervalMs != tetris.speed) {
         clearInterval(interval);
         intervalMs = tetris.speed;
@@ -469,7 +471,10 @@ class Tetris {
   }
 
   setSpeed() {
-    this.level = this.score == 0 ? 1 : Math.ceil(this.score / 10);
+    this.level =
+      this.timesLinesWereClearted == 0
+        ? 1
+        : Math.ceil(this.timesLinesWereClearted / 10);
 
     this.speed =
       this.level < 11

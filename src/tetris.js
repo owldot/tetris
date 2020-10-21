@@ -115,7 +115,10 @@ class Tetris {
   }
 
   setSpeed() {
-    this.level = this.score == 0 ? 1 : Math.ceil(this.score / 10);
+    this.level =
+      this.timesLinesWereClearted == 0
+        ? 1
+        : Math.ceil(this.timesLinesWereClearted / 10);
 
     this.speed =
       this.level < 11

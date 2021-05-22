@@ -11,11 +11,30 @@
 </head>
 
 <body>
+  <audio id="bg_music_1" src="/assets/music/tetris-gameboy-01.mp3" type="audio/mpeg"></audio>
+
+  <audio id="bg_music_2"src="/assets/music/tetris-gameboy-02.mp3" type="audio/mpeg"></audio>
+
+  <audio id="bg_music_3"src="/assets/music/tetris-gameboy-03.mp3" type="audio/mpeg"></audio>
+
+  <audio id="bg_music_4"src="/assets/music/tetris-gameboy-04.mp3" type="audio/mpeg"></audio>
+
+  <audio id="bg_music_5"src="/assets/music/tetris-gameboy-05.mp3" type="audio/mpeg"></audio>
+
+  <audio id="music_down"src="/assets/music/down.wav"></audio>
+
+  <audio id="music_line"src="/assets/music/line.wav"></audio>
+
+  <audio id="music_side"src="/assets/music/side.wav"></audio>
+
   <h1>
-    Trivial Tetris
+    Tetris
   </h1>
-  <h3>Score: <span id="score">0</span></h3>
-  <h3>Level: <span id="level">1</span></h3>
+  <button class='sound' id='sound-button'>Sound <span id="sound-on">OFF</span></button>
+  <div class="abs-right">
+    <h3>Level: <span id="level">1</span></h3>
+    <h3>Score: <span id="score">0</span></h3>
+  </div>
   <!-- <button class='start' id='start-button'>Start!</button> -->
 
   <div class="grid next-piece" id="next-piece">
@@ -38,7 +57,7 @@
 
   <h5 class="yellow">Press escape button to pause the game.</h5>
   <p class="grey">This game is dedicated to my son. Andrew, you are the best. Love, mom.</p>
-  <p class="grey">Svitlana Dzyuban &copy; 2020</p>
+  <p class="grey">Svitlana Dzyuban &copy; 2021</p>
   <div class="centerLabel hidden">
     <div>
       <div class='high-score'>

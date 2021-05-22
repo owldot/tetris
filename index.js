@@ -7,14 +7,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const levelDisplay = document.getElementById('level');
   const startBtn = document.getElementById('start-button');
   const resumeBtn = document.getElementById('resume-button');
+  const toggleSoundBtn = document.getElementById('sound-button');
+  const lableSoundBtn = document.getElementById('sound-on');
   const label = document.getElementById('label');
   const labelDrop = document.querySelector('.centerLabel');
   const highScoreTable = document.getElementById('high-score');
+
+  const bgMusic = {
+    1: document.getElementById('bg_music_1'),
+    2: document.getElementById('bg_music_2'),
+    3: document.getElementById('bg_music_3'),
+    4: document.getElementById('bg_music_4'),
+    5: document.getElementById('bg_music_5')
+  };
 
   document.addEventListener('keydown', listenKeyMove);
   document.addEventListener('keydown', listenKeyPause);
   startBtn.addEventListener('click', startNewGame);
   resumeBtn.addEventListener('click', pauseGame);
+  toggleSoundBtn.addEventListener('click', toggleSound);
 
   let squares = Array.from(document.querySelectorAll('.grid.game div'));
   let nextPieceSquares = Array.from(
@@ -31,6 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let interval;
   let intervalMs;
   let togglePause = false;
+  let toggleSoundFlag = false;
+  const sound = new Audio();
+
   startNewGame();
 
   function listenKeyPause(event) {
@@ -105,6 +119,24 @@ document.addEventListener('DOMContentLoaded', () => {
       resumeBtn.classList.remove('hidden');
       interval = setInterval(nextMoveDown.bind(this), tetris.speed);
     }
+  }
+
+  function toggleSound() {
+    toggleSoundFlag = !toggleSoundFlag;
+    lableSoundBtn.innerText = toggleSoundFlag ? 'ON' : 'OFF';
+    if (toggleSoundFlag) {
+      const musicElement = randomMusic();
+      sound.src = musicElement.src;
+      sound.loop = true;
+      sound.play();
+    } else {
+      sound.pause();
+    }
+  }
+
+  function randomMusic() {
+    const num = Math.floor(Math.random() * 5) + 1; // 5 music tracks
+    return bgMusic[num];
   }
 
   function listenKeyMove(event) {

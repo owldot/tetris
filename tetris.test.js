@@ -504,7 +504,7 @@ describe('Tetris', () => {
 
     tetris.calculateScore();
 
-    expect(tetris.score).toBe(1);
+    expect(tetris.score).toBe(10);
     expect(tetris.timesLinesWereClearted).toBe(1);
   });
 
@@ -523,7 +523,7 @@ describe('Tetris', () => {
 
     tetris.calculateScore();
 
-    expect(tetris.score).toBe(3);
+    expect(tetris.score).toBe(30);
     expect(tetris.timesLinesWereClearted).toBe(1);
   });
 
@@ -553,7 +553,7 @@ describe('Tetris', () => {
 
     tetris.calculateScore();
 
-    expect(tetris.score).toBe(8);
+    expect(tetris.score).toBe(80);
     expect(tetris.timesLinesWereClearted).toBe(2);
   });
 
@@ -571,7 +571,7 @@ describe('Tetris', () => {
     tetris.board = board;
 
     tetris.calculateScore();
-    expect(tetris.score).toBe(5);
+    expect(tetris.score).toBe(50);
 
     board.area = [
       [0, 0, 0, 0, 0],
@@ -584,7 +584,7 @@ describe('Tetris', () => {
     tetris.level = 5;
     tetris.calculateScore();
 
-    expect(tetris.score).toBe(15);
+    expect(tetris.score).toBe(125);
 
     board.area = [
       [0, 0, 0, 0, 0],
@@ -597,7 +597,7 @@ describe('Tetris', () => {
     tetris.level = 10;
     tetris.calculateScore();
 
-    expect(tetris.score).toBe(30);
+    expect(tetris.score).toBe(225);
 
     board.area = [
       [0, 0, 0, 0, 0],
@@ -610,7 +610,7 @@ describe('Tetris', () => {
     tetris.level = 12;
     tetris.calculateScore();
 
-    expect(tetris.score).toBe(55);
+    expect(tetris.score).toBe(335);
   });
 });
 

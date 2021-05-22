@@ -99,7 +99,6 @@ class Tetris {
 
   calculateScore() {
     const linesCleared = this.board.clearFullLines();
-
     if (linesCleared > 0) {
       this.score +=
         this.getScoreMultiplier(linesCleared) * this.getSpeedMultiplier();
@@ -108,11 +107,11 @@ class Tetris {
   }
   getSpeedMultiplier() {
     if (this.level < 5) {
-      return 1;
+      return 10;
     } else if (this.level >= 5 && this.level < 10) {
-      return 2;
+      return 15;
     } else if (this.level >= 10) {
-      return 3 + (this.level - 10);
+      return 20 + (this.level - 10);
     }
   }
 
